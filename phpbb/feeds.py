@@ -1,0 +1,32 @@
+# -*- coding: UTF-8 -*-
+#
+# This file is part of Atopowe, a Django site with phpBB integration
+# Copyright (C) 2007  Maciej Bliziński
+# 
+# Atopowe is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# Atopowe is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Atopowe; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor,
+# Boston, MA  02110-1301  USA
+
+from django.utils.translation import gettext_lazy as _
+from django.contrib.syndication.feeds import Feed
+from atopowe.phpbb.models import ForumPost
+
+class LatestForumPosts(Feed):
+    title = u"Forum Atopowe.pl"
+    link = "/forum/"
+    description = _("Newest posts on the forum.")
+    def items(self):
+        return ForumPost.objects.order_by('-post_time').exclude(topic__forum__forum_id=15).exclude(topic__forum__forum_id=6)[:20]
+    def item_link(self, obj):
+        return obj.get_external_url()
