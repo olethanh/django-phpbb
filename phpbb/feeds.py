@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 #
-# This file is part of Atopowe, a Django site with phpBB integration
+# This file is part of django-phpbb, integration between Django and phpBB
 # Copyright (C) 2007  Maciej Bliziński
 # 
 # Atopowe is free software; you can redistribute it and/or modify
