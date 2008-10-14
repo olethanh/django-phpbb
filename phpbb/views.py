@@ -1,32 +1,30 @@
 # -*- coding: utf-8 -*-
 # This file is part of django-phpbb, integration between Django and phpBB
-# Copyright (C) 2007  Maciej Bliziński
+# Copyright (C) 2007-2008  Maciej Bliziński
 # 
-# Atopowe is free software; you can redistribute it and/or modify
+# django-phpbb is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 # 
-# Atopowe is distributed in the hope that it will be useful,
+# django-phpbb is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
-# along with Atopowe; if not, write to the Free Software
+# along with django-phpbb; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA  02110-1301  USA
 
-from atopowe.phpbb.models import ForumForum, ForumTopic, ForumPost
+from phpbb.models import ForumForum, ForumTopic, ForumPost
 from django.http import HttpResponseRedirect, Http404
 from django.template.context import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.paginator import ObjectPaginator, InvalidPage
 from django.core import exceptions
 
-# PAGINATE_BY = 10
 
-# def forum_index(request, forum_id, slug, page = None, paginate_by = PAGINATE_BY):
 def forum_index(request, forum_id, slug, page = None, paginate_by = 10):
     if page:
         try:
@@ -71,6 +69,7 @@ def forum_index(request, forum_id, slug, page = None, paginate_by = 10):
         'object': f,
         'topics': object_list,
         }, context_instance = c)
+
 
 def topic(request, topic_id, slug, page = None, paginate_by = 10):
     if page:
@@ -120,11 +119,13 @@ def topic(request, topic_id, slug, page = None, paginate_by = 10):
         'posts': object_list,
         }, context_instance = c)
 
+
 def unanswered(request):
     topics = ForumTopic.objects.filter(topic_replies = 0)
     return render_to_response("phpbb/unanswered.html", {
         'topics': topics,
         }, context_instance = RequestContext(request))
+
 
 def handle_viewtopic(request):
     if request.GET.has_key('t'):
@@ -135,4 +136,3 @@ def handle_viewtopic(request):
         topic_id = request.GET['p']
         t = ForumPost.objects.get(pk = topic_id)
         return HttpResponseRedirect(t.get_absolute_url())
-

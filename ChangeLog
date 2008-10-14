@@ -1,3 +1,8 @@
+2008-10-14  Maciej Bliziński  <maciej.blizinski@gmail.com>
+
+	* django-phpbb: Updated comments and removed references to the
+	  previous project
+
 2008-10-12  Maciej Bliziński  <maciej.blizinski@gmail.com>
 
 	* PhpbbPassword: password checking added.

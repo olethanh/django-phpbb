@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 # This file is part of django-phpbb, integration between Django and phpBB
-# Copyright (C) 2007  Maciej Bliziński
+# Copyright (C) 2007-2008  Maciej Bliziński
 # 
-# Atopowe is free software; you can redistribute it and/or modify
+# django-phpbb is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 # 
-# Atopowe is distributed in the hope that it will be useful,
+# django-phpbb is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
-# along with Atopowe; if not, write to the Free Software
+# along with django-phpbb; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA  02110-1301  USA
 
@@ -22,16 +22,17 @@ from django.contrib.auth.models import User
 from atopowe.portal.utils import slugify
 from datetime import datetime
 from django.core import exceptions
-# from atopowe.phpbb.views import PAGINATE_BY
 
 def repair_latin1_encoding(s):
+    """Needed to cope with broken character encoding in a MySQL database.
+    
+    TODO: remove this function."""
     try:
         return s.decode('utf-8').encode('latin1').decode('latin2')
     except:
         return s
 
 
-# Create your models here.
 class ForumUser(models.Model):
     user_id = models.IntegerField(primary_key = True)
     username = models.CharField(max_length = 25)
@@ -169,7 +170,8 @@ class ForumAclRole(models.Model):
 
 class ForumAclRoleData(models.Model):
     role_id = models.ForeignKey('ForumAclRole', db_column = 'role_id')
-    auth_option_id = models.ForeignKey('ForumAclOption', db_column = 'auth_option_id')
+    auth_option_id = models.ForeignKey(
+        'ForumAclOption', db_column = 'auth_option_id')
     auth_setting = models.IntegerField()
     class Meta:
         db_table = ['phpbb3_acl_roles_data']
