@@ -23,6 +23,12 @@ class PhpbbPassword(unittest.TestCase):
                 self.p1._hash_crypt_private(
                     "foobar", "$H$9qS9RNyN8vivqlYBLHPGI9g5HJWHvD1")) 
 
+    def test_unicodePassword(self):
+        self.assertEquals(
+                "$H$9qS9RNyN8vivqlYBLHPGI9g5HJWHvD1",
+                self.p1._hash_crypt_private(
+                    unicode("foobar"), "$H$9qS9RNyN8vivqlYBLHPGI9g5HJWHvD1")) 
+
     def test_hash_crypt_private03(self):
         """No $H$ at the beginning."""
         self.assertEquals(
@@ -57,6 +63,7 @@ class PhpbbPassword(unittest.TestCase):
 
     def test_ordx3(self):
         self.assertEquals(0, self.p1._ordx("a", 1));
+
 
 if __name__ == "__main__":
     unittest.main()

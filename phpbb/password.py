@@ -69,6 +69,8 @@ http://code.phpbb.com/repositories/entry/5/trunk/phpBB/includes/functions.php
         
         'setting' means 'hash' or 'salt' here."""
         output = self.wrong
+        if type(password) != str:
+            password = str(password)
         if setting[0:3] != "$H$":
             return output
         count_log2 = itoa64.index(setting[3])
