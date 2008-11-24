@@ -1,0 +1,5 @@
+django-phpbb - Django PhpBB integration
+
+To do list:
+
+- Add support for bbcode http://code.google.com/p/postmarkup/
