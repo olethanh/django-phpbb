@@ -1,0 +1,20 @@
+{% extends "phpbb/index.html" %}
+{% load phpbb %}
+
+{% block content %}
+<strong>Forum Atopowe Zapalenie Skóry Strona Główna</strong>
+
+<p>Przeglądasz w tej chwili <em>archiwum</em> naszego forum. Nie można tutaj pisać
+nowych postów. Jeżeli chcesz pisać, zapraszam
+<a href="http://www.atopowe-zapalenie.pl/forum/">tutaj</a>.</p>
+<p><a href="/forum/unanswered/"><strong>Tematy bez odpowiedzi</strong></a></p>
+
+<ul class="forum_list">
+  {% for object in object_list %}
+  <li>
+  <span class="forum_name"><a href="{{ object.get_absolute_url }}">{{ object }}</a></span>
+	  <br />
+	  <span class="forum_description">{{ object.get_desc }}</span><br/></li>
+  {% endfor %}
+</ul>
+{% endblock %}

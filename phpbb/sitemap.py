@@ -18,8 +18,8 @@
 # Boston, MA  02110-1301  USA
 
 from django.contrib import sitemaps
-from phpbb.models import ForumTopic, ForumPost, ForumForum
-from phpbb.urls import forumqs
+from models import ForumTopic, ForumPost, ForumForum
+from urls import forumqs
 
 class ForumForumSitemap(sitemaps.Sitemap):
     changefreq = "monthly"

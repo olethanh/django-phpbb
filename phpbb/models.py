@@ -23,16 +23,6 @@ from atopowe.portal.utils import slugify
 from datetime import datetime
 from django.core import exceptions
 
-def repair_latin1_encoding(s):
-    """Needed to cope with broken character encoding in a MySQL database.
-    
-    TODO: remove this function."""
-    try:
-        return s.decode('utf-8').encode('latin1').decode('latin2')
-    except:
-        return s
-
-
 class ForumUser(models.Model):
     user_id = models.IntegerField(primary_key = True)
     username = models.CharField(max_length = 25)
@@ -42,45 +32,41 @@ class ForumUser(models.Model):
     user_website = models.CharField(max_length = 100)
     user_avatar_type = models.IntegerField()
     user_avatar = models.CharField(max_length = 250)
-    def get_username(self):
-        return repair_latin1_encoding(self.username)
     def __unicode__(self):
-        return self.get_username()
+        return self.username
     class Meta:
         db_table = 'phpbb3_users'
         ordering = ['username']
     class Admin:
         pass
 
+
 class DjangoPhpbbUserMapping(models.Model):
+    """Maps phpBB users to Django users, 1:1."""
     django_user = models.OneToOneField(User)
-    phpbb_user = models.ForeignKey(ForumUser,
-            unique = True)
+    phpbb_user = models.ForeignKey(ForumUser, unique = True)
+
 
 class ForumForum(models.Model):
     forum_id = models.IntegerField(primary_key = True)
     forum_name = models.CharField(max_length = 60)
     forum_topics = models.IntegerField()
     forum_posts = models.IntegerField()
-    forum_last_post = models.ForeignKey('ForumPost', db_column = 'forum_last_post_id')
+    forum_last_post = models.ForeignKey(
+            'ForumPost', db_column = 'forum_last_post_id')
     # forum_order = models.IntegerField()
     forum_desc = models.TextField()
     # auth_read = models.SmallIntegerField()
     def __unicode__(self):
-        return repair_latin1_encoding(self.forum_name)
-        # return self.get_name()
-	# return self.forum_name.encode('latin1').decode('latin2')
-	# return self.forum_name
-	# return "Type: '%s'" % type(self.forum_name)
+        return self.forum_name
     def get_absolute_url(self):
         return u"/forum/%s/%s/" % (self.forum_id, self.get_slug())
     def get_slug(self):
         return slugify(self.get_name())
     def get_name(self):
-        # raise exceptions.ObjectDoesNotExist
-        return repair_latin1_encoding(self.forum_name)
+        return self.forum_name
     def get_desc(self):
-        return repair_latin1_encoding(self.forum_desc)
+        return self.forum_desc
     class Meta:
         db_table = 'phpbb3_forums'
         ordering = ['forum_name']
@@ -98,11 +84,11 @@ class ForumTopic(models.Model):
     topic_last_post = models.ForeignKey('ForumPost', related_name = 'last_in')
     topic_first_post = models.ForeignKey('ForumPost', related_name = 'first_in')
     def get_title(self):
-        return repair_latin1_encoding(self.topic_title)
+        return self.topic_title
     def __unicode__(self):
         return self.get_title()
     def get_absolute_url(self):
-        return "/forum/tematy/%s/%s/" % (self.topic_id, self.get_slug())
+        return "/forum/topics/%s/%s/" % (self.topic_id, self.get_slug())
     def get_slug(self):
         return slugify(self.get_title())
     class Meta:
@@ -114,7 +100,9 @@ class ForumTopic(models.Model):
     class Admin:
         pass
 
+
 class ForumPost(models.Model):
+    """phpBB3 forum post."""
     PAGINATE_BY = 10
     post_id = models.IntegerField(primary_key = True)
     # post_title = models.CharField(max_length = 60)
@@ -127,23 +115,19 @@ class ForumPost(models.Model):
     def __unicode__(self):
         return unicode(self.post_id)
     def get_external_url(self):
-        return "http://www.atopowe-zapalenie.pl/forum/viewtopic.php?p=%s#%s" % (self.post_id, self.post_id)
+        return ("http://www.atopowe-zapalenie.pl/forum/viewtopic.php?p=%s#%s" %
+                (self.post_id, self.post_id))
     def get_absolute_url(self):
-        # return self.topic.get_absolute_url()
-        return "/forum/tematy/%s/%s/page%d/" % (self.topic.topic_id, self.topic.get_slug(), self.get_page())
+        return ("/forum/topics/%s/%s/page%d/" %
+                (self.topic.topic_id, self.topic.get_slug(), self.get_page()))
     def get_page(self):
-        # TODO: find out, which post in the row it is.
+        """TODO: find out, which post in the row it is."""
         return 1
-    # def get_forumtopic_order(self):
-    #     return self.post_time
-
     class Meta:
         db_table = 'phpbb3_posts'
         ordering = ['post_time']
     class Admin:
         pass
-    def foo(self):
-        return u"foobar"
 
 
 class ForumAclOption(models.Model):
@@ -158,6 +142,7 @@ class ForumAclOption(models.Model):
     class Admin:
         pass
 
+
 class ForumAclRole(models.Model):
     role_id = models.IntegerField(primary_key = True)
     role_name = models.CharField(max_length = 255)
@@ -168,13 +153,13 @@ class ForumAclRole(models.Model):
     class Admin:
         pass
 
+
 class ForumAclRoleData(models.Model):
     role_id = models.ForeignKey('ForumAclRole', db_column = 'role_id')
     auth_option_id = models.ForeignKey(
         'ForumAclOption', db_column = 'auth_option_id')
     auth_setting = models.IntegerField()
     class Meta:
-        db_table = ['phpbb3_acl_roles_data']
+        db_table = 'phpbb3_acl_roles_data'
     class Admin:
         pass
-

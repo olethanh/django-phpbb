@@ -1,0 +1,62 @@
+{% extends "phpbb/index.html" %}
+{% load phpbb %}
+{% block bartitle %}{{ object }}{% endblock %}
+
+{% block sidebar %}
+<script type="text/javascript"><!--
+google_ad_client = "pub-2555286933666992";
+/* Testowy do atopowe.pl */
+google_ad_slot = "4123815299";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+{% endblock %}
+
+{% block content %}
+<h2>{{ object }}</h2>
+<a href="../../../"><strong>Forum Atopowe Zapalenie Skóry Strona Główna</strong></a>
+→
+<a href="{{ object.forum.get_absolute_url }}"><strong>{{ object.forum }}</strong></a>
+{% if is_paginated %}
+<div class="pagination">
+{% if has_previous %}<a href="{{ path_prefix }}page{{ previous }}/">← wcześniejsze</a>{% endif %}
+</div>
+{% endif %}
+
+<ul class="posts">
+{% for post in posts %}
+<li>
+{% ifequal post.poster.user_avatar_type 1 %}
+<!--
+<div class="avatar" style="background-image: url(http://www.atopowe-zapalenie.pl/forum/images/avatars/{{ post.poster.user_avatar }});">
+</div>
+-->
+<img class="avatar" alt="" src="http://www.atopowe-zapalenie.pl/forum/images/avatars/{{ post.poster.user_avatar }}" />
+{% endifequal %}
+<a name="#post-{{ post.post_id }}"></a>
+<strong>{{ post.poster }}:</strong>
+{{ post.post_text|bbcode }}
+</li>
+{% endfor %}
+</ul>
+{% if is_paginated %}
+{% if has_next %}<a href="{{ path_prefix }}page{{ next }}/">późniejsze →</a>{% endif %}
+<div class="pagination">
+<ul class="pagination">
+{% for page_no in page_list %}
+{% ifequal page page_no %}
+<li class="page_no" id="current-page">{{ page_no }}</li>
+{% else %}
+<li class="page_no"><a href="{{ path_prefix }}page{{ page_no }}/">{{ page_no }}</a></li>
+{% endifequal %}
+
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+{% endblock %}
+

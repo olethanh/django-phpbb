@@ -1,0 +1,57 @@
+{% extends "phpbb/index.html" %}
+{% load phpbb %}
+
+
+{% block sidebar %}
+{% endblock %}
+
+{% block bartitle %}{{ object }}{% endblock %}
+
+{% block content %}
+{% block forum_detail %}
+<h2>{{ object }}</h2>
+<a href="../../"><strong>Forum Atopowe Zapalenie Skóry Strona Główna</strong></a>
+→
+<strong>{{ object }}</strong>
+{% endblock %}
+
+{% if is_paginated %}
+<div class="pagination">
+{% if has_previous %}<a href="{{ path_prefix }}page{{ previous }}/">← późniejsze</a>{% endif %}
+</div>
+{% endif %}
+
+<ul class="topic_list">
+{% for topic in topics %}
+<li>
+<span class="topic_title"><a href="{{ topic.get_absolute_url }}">{{ topic }}</a></span>
+<br />
+<span class="topic_description">{{ topic.topic_poster.get_username }},
+odpowiedzi: {{ topic.topic_replies }}, ost. {{ topic.topic_last_post.poster.get_username }}, {{ topic.topic_last_post.get_time|timesince }} temu
+<a href="{{ topic.topic_last_post.get_absolute_url }}">&#187;</a>
+</span>
+</li>
+{% endfor %}
+</ul>
+
+
+{% if is_paginated %}
+
+{% if has_next %}<a href="{{ path_prefix }}page{{ next }}/">wcześniejsze →</a>{% endif %}
+
+<div class="pagination">
+<ul class="pagination">
+{% for page_no in page_list %}
+{% ifequal page page_no %}
+<li class="page_no" id="current-page">{{ page_no }}</li>
+{% else %}
+<li class="page_no"><a href="{{ path_prefix }}page{{ page_no }}/">{{ page_no }}</a></li>
+{% endifequal %}
+
+{% endfor %}
+</ul>
+
+</div>
+{% endif %}
+
+{% endblock %}

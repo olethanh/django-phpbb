@@ -1,0 +1,17 @@
+{% extends "phpbb/forum_detail.html" %}
+{% block content %}
+{% load phpbb %}
+<ul class="posts">
+{% for topic in topics %}
+<li>
+<strong>{{ topic.get_title }}</strong>
+({{ topic.topic_first_post.poster }})
+<br />
+{{ topic.topic_first_post.forumposttext.get_post_text|bbcode }}
+<br />
+<a href="{{  topic.topic_first_post.get_external_url }}" class="answer">odpowiedz</a>
+</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

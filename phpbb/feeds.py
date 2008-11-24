@@ -20,7 +20,7 @@
 
 from django.utils.translation import gettext_lazy as _
 from django.contrib.syndication.feeds import Feed
-from phpbb.models import ForumPost
+from models import ForumPost
 
 class LatestForumPosts(Feed):
     title = u"Forum"

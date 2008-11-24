@@ -17,18 +17,18 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA  02110-1301  USA
 
-from phpbb.models import ForumForum, ForumTopic, ForumPost
+from models import ForumForum, ForumTopic, ForumPost
 from django.http import HttpResponseRedirect, Http404
 from django.template.context import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
-from django.core.paginator import ObjectPaginator, InvalidPage
+from django.core.paginator import Paginator, InvalidPage
 from django.core import exceptions
 
 
-def forum_index(request, forum_id, slug, page = None, paginate_by = 10):
-    if page:
+def forum_index(request, forum_id, slug, page_no = None, paginate_by = 10):
+    if page_no:
         try:
-            if int(page) == 1:
+            if int(page_no) == 1:
                 return HttpResponseRedirect("../")
         except:
             pass
@@ -36,10 +36,10 @@ def forum_index(request, forum_id, slug, page = None, paginate_by = 10):
     else:
         path_prefix = ""
     try:
-        page = int(page)
+        page_no = int(page_no)
     except:
-        page = 1
-    if not(page >= 1 and page <= 1000):
+        page_no = 1
+    if not(page_no >= 1 and page_no <= 1000):
         raise Http404
     f = ForumForum.objects.get(pk = forum_id)
     # if f.auth_read != 0:
@@ -47,34 +47,37 @@ def forum_index(request, forum_id, slug, page = None, paginate_by = 10):
     if f.get_slug() != slug:
         return HttpResponseRedirect(f.get_absolute_url())
     topics = f.forumtopic_set.all()
-    paginator = ObjectPaginator(topics, paginate_by)
+    paginator = Paginator(topics, paginate_by)
+    print "page_no:", page_no
     try:
-        object_list = paginator.get_page(page - 1)
+        print "requesting page"
+        page = paginator.page(page_no)
+        print "got page", page
     except InvalidPage:
         raise Http404
     c = RequestContext(request, {
             'path_prefix': path_prefix,
-            'is_paginated': paginator.pages > 1,
+            'is_paginated': paginator.num_pages > 1,
             'results_per_page': paginate_by,
-            'has_next': paginator.has_next_page(page - 1),
-            'has_previous': paginator.has_previous_page(page - 1),
-            'page': page,
-            'next': page + 1,
-            'previous': page - 1,
-            'pages': paginator.pages,
-            'hits' : paginator.hits,
-            'page_list': range(1, paginator.pages + 1),
+            'has_next': page.has_next(),
+            'has_previous': page.has_previous(),
+            'page': page_no,
+            'next': page_no + 1,
+            'previous': page_no - 1,
+            'pages': paginator.num_pages,
+            'hits' : 'what hits?',
+            'page_list': range(1, paginator.num_pages + 1),
     })
     return render_to_response("phpbb/forum_detail.html", {
         'object': f,
-        'topics': object_list,
+        'topics': page.object_list,
         }, context_instance = c)
 
 
-def topic(request, topic_id, slug, page = None, paginate_by = 10):
-    if page:
+def topic(request, topic_id, slug, page_no = None, paginate_by = 10):
+    if page_no:
         try:
-            if int(page) == 1:
+            if int(page_no) == 1:
                 return HttpResponseRedirect("../")
         except:
             pass
@@ -82,10 +85,10 @@ def topic(request, topic_id, slug, page = None, paginate_by = 10):
     else:
         path_prefix = ""
     try:
-        page = int(page)
+        page_no = int(page_no)
     except:
-        page = 1
-    if not(page >= 1 and page <= 1000):
+        page_no = 1
+    if not(page_no >= 1 and page_no <= 1000):
         raise Http404
     try:
         t = ForumTopic.objects.get(pk = topic_id)
@@ -96,27 +99,27 @@ def topic(request, topic_id, slug, page = None, paginate_by = 10):
     posts = t.forumpost_set.all()
     if t.get_slug() != slug:
         return HttpResponseRedirect(t.get_absolute_url())
-    paginator = ObjectPaginator(posts, paginate_by)
+    paginator = Paginator(posts, paginate_by)
     try:
-        object_list = paginator.get_page(page - 1)
+        page = paginator.page(page_no)
     except InvalidPage:
         raise Http404
     c = RequestContext(request, {
             'path_prefix': path_prefix,
-            'is_paginated': paginator.pages > 1,
+            'is_paginated': paginator.num_pages > 1,
             'results_per_page': paginate_by,
-            'has_next': paginator.has_next_page(page - 1),
-            'has_previous': paginator.has_previous_page(page - 1),
-            'page': page,
-            'next': page + 1,
-            'previous': page - 1,
-            'pages': paginator.pages,
-            'hits' : paginator.hits,
-            'page_list': range(1, paginator.pages + 1),
+            'has_next': page.has_next(),
+            'has_previous': page.has_previous(),
+            'page': page_no,
+            'next': page_no + 1,
+            'previous': page_no - 1,
+            'pages': paginator.num_pages,
+            'hits' : "hits? what hits?",
+            'page_list': range(1, paginator.num_pages + 1),
     })
     return render_to_response("phpbb/topic_detail.html", {
         'object': t,
-        'posts': object_list,
+        'posts': page.object_list,
         }, context_instance = c)
 
 

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load phpbb %}
+{% block subtitle %}
+Archiwum forum dyskusyjnego
+{% endblock %}
+
+{% block sidebar %}
+      {% if last_forum_posts %}
+      <h3>Obecnie na forum</h3>
+      <ul class="comments">
+      {% for post in last_forum_posts %}
+      <li id="post-{{ post.post_id }}"><p><a href="{{ post.get_external_url }}" title="{{ post.topic.get_title }}" class="comment_title">{{ post.poster.get_username }}</a>:
+      {{ post.forumposttext.get_post_text|bbcode|removetags:"br"|truncatewords:"19" }} <a href="{{ post.get_external_url }}" title="{{ post.topic.get_title }}">&#187;</a></p></li>
+      {% endfor %}
+      </ul>
+      {% endif %}
+
+{% endblock %}
