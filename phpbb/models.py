@@ -19,9 +19,10 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-from atopowe.portal.utils import slugify
+from django.contrib.phpbb.utils import slugify
 from datetime import datetime
 from django.core import exceptions
+from django.utils.encoding import force_unicode
 
 class ForumUser(models.Model):
     user_id = models.IntegerField(primary_key = True)
@@ -32,13 +33,17 @@ class ForumUser(models.Model):
     user_website = models.CharField(max_length = 100)
     user_avatar_type = models.IntegerField()
     user_avatar = models.CharField(max_length = 250)
+    user_regdate_int = models.IntegerField(db_column="user_regdate")
+    user_lastvisit_int = models.IntegerField(db_column="user_regdate")
     def __unicode__(self):
         return self.username
+    def user_regdate(self):
+        return datetime.fromtimestamp(self.user_regdate_int)
+    def user_lastvisit(self):
+        return datetime.fromtimestamp(self.user_lastvisit_int)
     class Meta:
         db_table = 'phpbb3_users'
         ordering = ['username']
-    class Admin:
-        pass
 
 
 class DjangoPhpbbUserMapping(models.Model):
@@ -54,24 +59,16 @@ class ForumForum(models.Model):
     forum_posts = models.IntegerField()
     forum_last_post = models.ForeignKey(
             'ForumPost', db_column = 'forum_last_post_id')
-    # forum_order = models.IntegerField()
     forum_desc = models.TextField()
-    # auth_read = models.SmallIntegerField()
     def __unicode__(self):
-        return self.forum_name
+        return force_unicode(self.forum_name)
     def get_absolute_url(self):
         return u"/forum/%s/%s/" % (self.forum_id, self.get_slug())
     def get_slug(self):
-        return slugify(self.get_name())
-    def get_name(self):
-        return self.forum_name
-    def get_desc(self):
-        return self.forum_desc
+        return slugify(self.forum_name)
     class Meta:
         db_table = 'phpbb3_forums'
         ordering = ['forum_name']
-    class Admin:
-        pass
 
 
 class ForumTopic(models.Model):
@@ -113,12 +110,13 @@ class ForumPost(models.Model):
     def get_time(self):
         return datetime.fromtimestamp(self.post_time)
     def __unicode__(self):
-        return unicode(self.post_id)
+        # return force_unicode(self.topic.topic_title + u" (post_id=%s)" % self.post_id)
+        return force_unicode(u" (post_id=%s)" % self.post_id)
     def get_external_url(self):
         return ("http://www.atopowe-zapalenie.pl/forum/viewtopic.php?p=%s#%s" %
                 (self.post_id, self.post_id))
     def get_absolute_url(self):
-        return ("/forum/topics/%s/%s/page%d/" %
+        return (u"/forum/topics/%s/%s/page%d/" %
                 (self.topic.topic_id, self.topic.get_slug(), self.get_page()))
     def get_page(self):
         """TODO: find out, which post in the row it is."""
@@ -126,8 +124,6 @@ class ForumPost(models.Model):
     class Meta:
         db_table = 'phpbb3_posts'
         ordering = ['post_time']
-    class Admin:
-        pass
 
 
 class ForumAclOption(models.Model):
@@ -139,8 +135,6 @@ class ForumAclOption(models.Model):
     class Meta:
         db_table = 'phpbb3_acl_options'
         ordering = ['auth_option']
-    class Admin:
-        pass
 
 
 class ForumAclRole(models.Model):
@@ -150,8 +144,6 @@ class ForumAclRole(models.Model):
     class Meta:
         db_table = 'phpbb3_acl_roles'
         ordering = ['role_order']
-    class Admin:
-        pass
 
 
 class ForumAclRoleData(models.Model):
@@ -161,5 +153,3 @@ class ForumAclRoleData(models.Model):
     auth_setting = models.IntegerField()
     class Meta:
         db_table = 'phpbb3_acl_roles_data'
-    class Admin:
-        pass

@@ -27,7 +27,7 @@
 <span class="topic_title"><a href="{{ topic.get_absolute_url }}">{{ topic }}</a></span>
 <br />
 <span class="topic_description">{{ topic.topic_poster.get_username }},
-odpowiedzi: {{ topic.topic_replies }}, ost. {{ topic.topic_last_post.poster.get_username }}, {{ topic.topic_last_post.get_time|timesince }} temu
+  {% trans "odpowiedzi" %}: {{ topic.topic_replies }}, {% trans "last" %} {{ topic.topic_last_post.poster.get_username }}, {{ topic.topic_last_post.get_time|timesince }} {% trans "ago" %}
 <a href="{{ topic.topic_last_post.get_absolute_url }}">&#187;</a>
 </span>
 </li>
@@ -36,19 +36,20 @@ odpowiedzi: {{ topic.topic_replies }}, ost. {{ topic.topic_last_post.poster.get_
 
 
 {% if is_paginated %}
-
-{% if has_next %}<a href="{{ path_prefix }}page{{ next }}/">wcześniejsze →</a>{% endif %}
-
+{% if has_next %}
+  <a href="{{ path_prefix }}page{{ next }}/">wcześniejsze →</a>
+{% endif %}
 <div class="pagination">
 <ul class="pagination">
-{% for page_no in page_list %}
-{% ifequal page page_no %}
-<li class="page_no" id="current-page">{{ page_no }}</li>
-{% else %}
-<li class="page_no"><a href="{{ path_prefix }}page{{ page_no }}/">{{ page_no }}</a></li>
-{% endifequal %}
-
-{% endfor %}
+  {% for page_no in page_list %}
+    {% ifequal page page_no %}
+    <li class="page_no" id="current-page">{{ page_no }}</li>
+    {% else %}
+    <li class="page_no">
+      <a href="{{ path_prefix }}page{{ page_no }}/">{{ page_no }}</a>
+    </li>
+    {% endifequal %}
+  {% endfor %}
 </ul>
 
 </div>

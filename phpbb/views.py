@@ -42,8 +42,6 @@ def forum_index(request, forum_id, slug, page_no = None, paginate_by = 10):
     if not(page_no >= 1 and page_no <= 1000):
         raise Http404
     f = ForumForum.objects.get(pk = forum_id)
-    # if f.auth_read != 0:
-    #     raise Http404
     if f.get_slug() != slug:
         return HttpResponseRedirect(f.get_absolute_url())
     topics = f.forumtopic_set.all()
@@ -94,8 +92,6 @@ def topic(request, topic_id, slug, page_no = None, paginate_by = 10):
         t = ForumTopic.objects.get(pk = topic_id)
     except exceptions.ObjectDoesNotExist, e:
         raise Http404
-    # if t.forum.auth_read != 0:
-    #     raise Http404
     posts = t.forumpost_set.all()
     if t.get_slug() != slug:
         return HttpResponseRedirect(t.get_absolute_url())
@@ -125,9 +121,10 @@ def topic(request, topic_id, slug, page_no = None, paginate_by = 10):
 
 def unanswered(request):
     topics = ForumTopic.objects.filter(topic_replies = 0)
-    return render_to_response("phpbb/unanswered.html", {
-        'topics': topics,
-        }, context_instance = RequestContext(request))
+    return render_to_response(
+            "phpbb/unanswered.html",
+            {'topics': topics,},
+            context_instance = RequestContext(request))
 
 
 def handle_viewtopic(request):

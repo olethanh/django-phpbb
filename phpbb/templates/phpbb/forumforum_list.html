@@ -2,12 +2,17 @@
 {% load phpbb %}
 
 {% block content %}
-<strong>Forum Atopowe Zapalenie Skóry Strona Główna</strong>
+<strong>
+  {% trans "Forum" %}
+  {% trans "Atopic Dermatitis" %}
+  {% trans "Main Page" %}
+</strong>
 
-<p>Przeglądasz w tej chwili <em>archiwum</em> naszego forum. Nie można tutaj pisać
-nowych postów. Jeżeli chcesz pisać, zapraszam
+<p>Przeglądasz w tej chwili <em>archiwum</em> naszego forum.
+Nie można tutaj pisać nowych postów.
+Jeżeli chcesz pisać, zapraszamy
 <a href="http://www.atopowe-zapalenie.pl/forum/">tutaj</a>.</p>
-<p><a href="/forum/unanswered/"><strong>Tematy bez odpowiedzi</strong></a></p>
+<p><a href="/forum/unanswered/"><strong>{% trans "Unanswered topics" %}</strong></a></p>
 
 <ul class="forum_list">
   {% for object in object_list %}
