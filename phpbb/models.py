@@ -105,10 +105,10 @@ class ForumPost(models.Model):
     # post_title = models.CharField(max_length = 60)
     topic = models.ForeignKey(ForumTopic)
     poster = models.ForeignKey(ForumUser)
-    post_time = models.IntegerField()
+    post_time_int = models.IntegerField(db_column='post_time')
     post_text = models.TextField()
-    def get_time(self):
-        return datetime.fromtimestamp(self.post_time)
+    def post_time(self):
+        return datetime.fromtimestamp(self.post_time_int)
     def __unicode__(self):
         # return force_unicode(self.topic.topic_title + u" (post_id=%s)" % self.post_id)
         return force_unicode(u" (post_id=%s)" % self.post_id)
@@ -123,7 +123,7 @@ class ForumPost(models.Model):
         return 1
     class Meta:
         db_table = 'phpbb3_posts'
-        ordering = ['post_time']
+        ordering = ['post_time_int']
 
 
 class ForumAclOption(models.Model):

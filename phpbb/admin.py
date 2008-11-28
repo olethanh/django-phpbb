@@ -11,7 +11,7 @@ class ForumTopicAdmin(admin.ModelAdmin):
     pass
 admin.site.register(ForumTopic, ForumTopicAdmin)
 class ForumPostAdmin(admin.ModelAdmin):
-    list_display = ('post_id', 'get_absolute_url', 'get_time', )
+    list_display = ('post_id', 'get_absolute_url', 'post_time', )
 admin.site.register(ForumPost, ForumPostAdmin)
 class ForumUserAdmin(admin.ModelAdmin):
     list_display = ('username',

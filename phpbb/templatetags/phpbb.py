@@ -38,7 +38,6 @@ def bbcode(s):
     s = re.sub(r':wink:', r'<img alt="Puszcza oczko" src="http://www.atopowe-zapalenie.pl/forum/images/smiles/icon_wink.gif" />', s)
     s = re.sub(r':!:', r'/!\\', s)
     s = re.sub(r'\n\n', r'\n', s)
-    s = re.sub(r'\n', r'<br />', s)
     # Cudzysłowy drukarskie
     # s = re.sub(r'"([^"]+)"', r'„\1”', s)
     # usuwamy odstępy przed interpunkcją
@@ -48,6 +47,18 @@ def bbcode(s):
     # musi być spacja przed nawiasem
     # s = re.sub(r'([\wąćęłńóśżź])(\()', r'\1 \2', s)
     s = re.sub(r'\?+', r'?', s)
+    # Remove HTML comment tags
+    s = re.sub(r'<![^>]+>', r' ', s)
+    s = re.sub(r'<img[^>]+>', r' ', s)
+    s = re.sub(r'<a[^>]+>', r' ', s)
+    s = re.sub(r'</[^>]+>', r' ', s)
+    # change URLs
+    s = re.sub(r'\[url=([^]]+)\]([^\[]+)\[/url:?[^]]+\]', r'\2', s)
+    # TODO: implement links
+    # re.sub(r'\[url=([^]]+)\]([^\[]+)\[/url:?[^]]+\]', r'<a href="\1">\2</a>',
+    # s)
+    # Quotations
+    s = re.sub(r'\[quote=([^]]+)\]([^\[]+)\[/quote:?[^]]+\]', r'"""\2"""', s)
     return s
 
 # @register.filter

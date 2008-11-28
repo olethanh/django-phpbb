@@ -27,6 +27,6 @@ class LatestForumPosts(Feed):
     link = "/forum/"
     description = _("Newest posts on the forum.")
     def items(self):
-        return ForumPost.objects.order_by('-post_time').exclude(topic__forum__forum_id=15).exclude(topic__forum__forum_id=6)[:20]
+        return ForumPost.objects.order_by('-post_time_int').exclude(topic__forum__forum_id=15).exclude(topic__forum__forum_id=6)[:20]
     def item_link(self, obj):
         return obj.get_external_url()
