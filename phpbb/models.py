@@ -76,7 +76,7 @@ class ForumTopic(models.Model):
     topic_title = models.CharField(max_length = 60)
     topic_replies = models.IntegerField()
     topic_poster = models.ForeignKey(ForumUser, db_column = 'topic_poster')
-    topic_time = models.IntegerField()
+    topic_time_int = models.IntegerField(db_column='topic_time')
     forum = models.ForeignKey(ForumForum)
     topic_last_post = models.ForeignKey('ForumPost', related_name = 'last_in')
     topic_first_post = models.ForeignKey('ForumPost', related_name = 'first_in')
@@ -88,9 +88,11 @@ class ForumTopic(models.Model):
         return "/forum/topics/%s/%s/" % (self.topic_id, self.get_slug())
     def get_slug(self):
         return slugify(self.get_title())
+    def topic_time(self):
+        return datetime.fromtimestamp(self.topic_time_int)
     class Meta:
         db_table = 'phpbb3_topics'
-        ordering = ['-topic_time']
+        ordering = ['-topic_time_int']
         # ordering = ['-topic_last_post_id']
         # order_with_respect_to = 'topic_last_post'
         # ordering = ['-post_time']
