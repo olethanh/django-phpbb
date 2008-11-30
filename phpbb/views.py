@@ -30,21 +30,23 @@ def forum_index(request, forum_id, slug, page_no = None, paginate_by = 10):
         try:
             if int(page_no) == 1:
                 return HttpResponseRedirect("../")
-        except:
+        except ValueError:
             pass
         path_prefix = "../"
     else:
         path_prefix = ""
     try:
         page_no = int(page_no)
-    except:
+    except ValueError:
+        page_no = 1
+    except TypeError:
         page_no = 1
     if not(page_no >= 1 and page_no <= 1000):
         raise Http404
     f = PhpbbForum.objects.get(pk = forum_id)
     if f.get_slug() != slug:
         return HttpResponseRedirect(f.get_absolute_url())
-    topics = f.phpbbtopic_set.all()
+    topics = f.phpbbtopic_set.all().order_by('-topic_last_post_time_int')
     paginator = Paginator(topics, paginate_by)
     print "page_no:", page_no
     try:

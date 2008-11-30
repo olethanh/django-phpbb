@@ -22,10 +22,10 @@ import views
 import models
 
 forumqs = (models.PhpbbForum.objects.exclude(forum_name='INDEX PAGE').
-	       exclude(forum_name='MEMBERLIST').
+           exclude(forum_name='MEMBERLIST').
            # FIXME: hardcoded forum IDs
-	       exclude(forum_id=15).
-	       exclude(forum_id=6))
+           exclude(forum_id=15).
+           exclude(forum_id=6))
 
 urlpatterns = patterns('',
     (r'^$', 'django.views.generic.list_detail.object_list',

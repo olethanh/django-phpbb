@@ -82,8 +82,12 @@ class PhpbbTopic(models.Model):
     forum = models.ForeignKey(PhpbbForum)
     topic_last_post = models.ForeignKey('PhpbbPost', related_name='last_in')
     topic_first_post = models.ForeignKey('PhpbbPost', related_name='first_in')
+    topic_last_post_time_int = models.IntegerField(
+            db_column='topic_last_post_time')
     def get_title(self):
         return self.topic_title
+    def topic_last_post_time(self):
+        return datetime.fromtimestamp(self.topic_last_post_time_int)
     def __unicode__(self):
         return self.get_title()
     def get_absolute_url(self):
