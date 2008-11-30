@@ -2,4 +2,10 @@ django-phpbb - Django PhpBB integration
 
 To do list:
 
-- Add support for bbcode http://code.google.com/p/postmarkup/
+- Add support for bbcode
+  - Option 1: use http://code.google.com/p/postmarkup/
+    - Issues: Doesn't support integration with a real phpBB database
+  - Option 2: port original bbcode[1].
+    
+[1] http://code.phpbb.com/repositories/entry/5/trunk/phpBB/includes/bbcode.php
+    http://code.phpbb.com/repositories/entry/5/trunk/phpBB/includes/message_parser.php
