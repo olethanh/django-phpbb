@@ -1,0 +1,53 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-30 22:29+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: feeds.py:28
+msgid "Newest posts on the forum."
+msgstr "Najnowsze posty na forum."
+
+#: templates/phpbb/forum_detail.html:31
+msgid "answers"
+msgstr "odpowiedzi"
+
+#: templates/phpbb/forum_detail.html:31
+msgid "last"
+msgstr "ost."
+
+#: templates/phpbb/forum_detail.html:31
+msgid "ago"
+msgstr "temu"
+
+#: templates/phpbb/index.html:8
+msgid "Discussion forum"
+msgstr "Forum dyskusyjne"
+
+#: templates/phpbb/phpbbforum_list.html:7
+msgid "Forum"
+msgstr "Forum"
+
+#: templates/phpbb/phpbbforum_list.html:8
+msgid "Atopic Dermatitis"
+msgstr "Atopowe Zapalenie Skóry"
+
+#: templates/phpbb/phpbbforum_list.html:9
+msgid "Main Page"
+msgstr "Strona Główna"
+
+#: templates/phpbb/phpbbforum_list.html:16
+msgid "Unanswered topics"
+msgstr "Bez odpowiedzi"

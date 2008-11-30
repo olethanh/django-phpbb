@@ -27,8 +27,8 @@
 <li>
 <span class="topic_title"><a href="{{ topic.get_absolute_url }}">{{ topic }}</a></span>
 <br />
-<span class="topic_description">{{ topic.topic_poster.get_username }},
-  {% trans "odpowiedzi" %}: {{ topic.topic_replies }}, {% trans "last" %} {{ topic.topic_last_post.poster.get_username }}, {{ topic.topic_last_post.get_time|timesince }} {% trans "ago" %}
+<span class="topic_description">{{ topic.topic_poster.username }},
+  {% trans "answers" %}: {{ topic.topic_replies }}, {% trans "last" %} {{ topic.topic_last_post.poster.username }}, {{ topic.topic_last_post.post_time|timesince }} {% trans "ago" %}
 <a href="{{ topic.topic_last_post.get_absolute_url }}">&#187;</a>
 </span>
 </li>
