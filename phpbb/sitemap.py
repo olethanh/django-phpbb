@@ -18,22 +18,22 @@
 # Boston, MA  02110-1301  USA
 
 from django.contrib import sitemaps
-from models import ForumTopic, ForumPost, ForumForum
+from models import PhpbbTopic, PhpbbPost, PhpbbForum
 from urls import forumqs
 
-class ForumForumSitemap(sitemaps.Sitemap):
+class PhpbbForumSitemap(sitemaps.Sitemap):
     changefreq = "monthly"
     priority = 0.4
     def items(self):
         return forumqs
 
-class ForumTopicSitemap(sitemaps.Sitemap):
+class PhpbbTopicSitemap(sitemaps.Sitemap):
     changefreq = "monthly"
     priority = 0.4
     def items(self):
-        return ForumTopic.objects.exclude(forum__forum_id=15).exclude(forum__forum_id=6)
+        return PhpbbTopic.objects.exclude(forum__forum_id=15).exclude(forum__forum_id=6)
     def lastmod(self, obj):
         try:
             return obj.topic_last_post.get_time()
-        except ForumPost.DoesNotExist:
+        except PhpbbPost.DoesNotExist:
             return None

@@ -21,7 +21,7 @@ from django.conf.urls.defaults import *
 import views
 import models
 
-forumqs = (models.ForumForum.objects.exclude(forum_name='INDEX PAGE').
+forumqs = (models.PhpbbForum.objects.exclude(forum_name='INDEX PAGE').
 	       exclude(forum_name='MEMBERLIST').
            # FIXME: hardcoded forum IDs
 	       exclude(forum_id=15).

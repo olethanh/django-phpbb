@@ -19,6 +19,7 @@
 
 import unittest
 import bbcode
+# http://labix.org/mocker
 import mocker
 
 
@@ -67,7 +68,7 @@ class BitFieldUnitTest(unittest.TestCase):
         self.b1.set(0)
         self.assertEquals(self.b1.get(0), 128)
 
-    def testSet0(self):
+    def testSet1(self):
         self.b1.set(0)
         self.assertEquals(self.b1.get_bin(), "10010000")
     
@@ -75,7 +76,8 @@ class BitFieldUnitTest(unittest.TestCase):
         self.assertEquals(self.b1.get_bin(), "00010000")
 
     def testGetAllSet(self):
-        self.assertEquals(self.b1.get_all_set(), [3, ])
+        self.b1.set(7)
+        self.assertEquals(self.b1.get_all_set(), [3, 7])
     
     def testGetBlob(self):
         self.assertEquals(self.b1.get_blob(), '\x10')

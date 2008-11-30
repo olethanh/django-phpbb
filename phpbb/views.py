@@ -17,7 +17,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA  02110-1301  USA
 
-from models import ForumForum, ForumTopic, ForumPost
+from models import PhpbbForum, PhpbbTopic, PhpbbPost
 from django.http import HttpResponseRedirect, Http404
 from django.template.context import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
@@ -41,10 +41,10 @@ def forum_index(request, forum_id, slug, page_no = None, paginate_by = 10):
         page_no = 1
     if not(page_no >= 1 and page_no <= 1000):
         raise Http404
-    f = ForumForum.objects.get(pk = forum_id)
+    f = PhpbbForum.objects.get(pk = forum_id)
     if f.get_slug() != slug:
         return HttpResponseRedirect(f.get_absolute_url())
-    topics = f.forumtopic_set.all()
+    topics = f.phpbbtopic_set.all()
     paginator = Paginator(topics, paginate_by)
     print "page_no:", page_no
     try:
@@ -89,10 +89,10 @@ def topic(request, topic_id, slug, page_no = None, paginate_by = 10):
     if not(page_no >= 1 and page_no <= 1000):
         raise Http404
     try:
-        t = ForumTopic.objects.get(pk = topic_id)
+        t = PhpbbTopic.objects.get(pk = topic_id)
     except exceptions.ObjectDoesNotExist, e:
         raise Http404
-    posts = t.forumpost_set.all()
+    posts = t.phpbbpost_set.all()
     if t.get_slug() != slug:
         return HttpResponseRedirect(t.get_absolute_url())
     paginator = Paginator(posts, paginate_by)
@@ -120,7 +120,7 @@ def topic(request, topic_id, slug, page_no = None, paginate_by = 10):
 
 
 def unanswered(request):
-    topics = ForumTopic.objects.filter(topic_replies = 0)
+    topics = PhpbbTopic.objects.filter(topic_replies = 0)
     return render_to_response(
             "phpbb/unanswered.html",
             {'topics': topics,},
@@ -130,9 +130,9 @@ def unanswered(request):
 def handle_viewtopic(request):
     if request.GET.has_key('t'):
         topic_id = request.GET['t']
-        t = ForumTopic.objects.get(pk = topic_id)
+        t = PhpbbTopic.objects.get(pk = topic_id)
         return HttpResponseRedirect(t.get_absolute_url())
     if request.GET.has_key('p'):
         topic_id = request.GET['p']
-        t = ForumPost.objects.get(pk = topic_id)
+        t = PhpbbPost.objects.get(pk = topic_id)
         return HttpResponseRedirect(t.get_absolute_url())

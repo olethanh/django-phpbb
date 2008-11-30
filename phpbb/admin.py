@@ -18,32 +18,38 @@
 # Boston, MA  02110-1301  USA
 
 from django.contrib import admin
-from django.contrib.phpbb.models import ForumForum
-from django.contrib.phpbb.models import ForumPost
-from django.contrib.phpbb.models import ForumTopic
-from django.contrib.phpbb.models import ForumUser
+from django.contrib.phpbb.models import PhpbbForum
+from django.contrib.phpbb.models import PhpbbPost
+from django.contrib.phpbb.models import PhpbbTopic
+from django.contrib.phpbb.models import PhpbbUser
+from django.contrib.phpbb.models import PhpbbConfig
 
-class ForumForumAdmin(admin.ModelAdmin):
+class PhpbbForumAdmin(admin.ModelAdmin):
     list_display = (
             'forum_name',
             'forum_id',
             'forum_desc',
             )
-admin.site.register(ForumForum, ForumForumAdmin)
-class ForumTopicAdmin(admin.ModelAdmin):
+admin.site.register(PhpbbForum, PhpbbForumAdmin)
+class PhpbbTopicAdmin(admin.ModelAdmin):
     list_display = (
         'topic_title',
         'topic_id',
         'topic_time',
     )
-admin.site.register(ForumTopic, ForumTopicAdmin)
-class ForumPostAdmin(admin.ModelAdmin):
+admin.site.register(PhpbbTopic, PhpbbTopicAdmin)
+class PhpbbPostAdmin(admin.ModelAdmin):
     list_display = ('post_id', 'get_absolute_url', 'post_time', )
-admin.site.register(ForumPost, ForumPostAdmin)
-class ForumUserAdmin(admin.ModelAdmin):
+admin.site.register(PhpbbPost, PhpbbPostAdmin)
+class PhpbbUserAdmin(admin.ModelAdmin):
     list_display = ('username',
                     'user_id',
                     'user_regdate',
                     'user_posts',
                     'user_email', )
-admin.site.register(ForumUser, ForumUserAdmin)
+admin.site.register(PhpbbUser, PhpbbUserAdmin)
+class PhpbbConfigAdmin(admin.ModelAdmin):
+    list_display = ('config_name',
+                    'config_value',
+                    'is_dynamic')
+admin.site.register(PhpbbConfig, PhpbbConfigAdmin)

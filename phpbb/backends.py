@@ -19,7 +19,7 @@
 
 import logging
 from django.contrib.auth.models import User
-from models import ForumUser
+from models import PhpbbUser
 import password as php_password
 
 logging.basicConfig(level=logging.DEBUG)
@@ -34,8 +34,8 @@ class PhpbbBackend:
         logging.debug("PhpbbBackend::authenticate()")
         user = None
         try:
-            phpbb_user = ForumUser.objects.get(username = username)
-        except ForumUser.DoesNotExist:
+            phpbb_user = PhpbbUser.objects.get(username = username)
+        except PhpbbUser.DoesNotExist:
             # The user does not exist in phpBB. Bailing out.
             logging.warning("User '%s' doesn't exist." % username)
             return None

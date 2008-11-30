@@ -24,7 +24,7 @@ from datetime import datetime
 from django.core import exceptions
 from django.utils.encoding import force_unicode
 
-class ForumUser(models.Model):
+class PhpbbUser(models.Model):
     user_id = models.IntegerField(primary_key=True)
     username = models.CharField(max_length=25)
     user_password = models.CharField(max_length=32)
@@ -51,16 +51,16 @@ class ForumUser(models.Model):
 class DjangoPhpbbUserMapping(models.Model):
     """Maps phpBB users to Django users, 1:1."""
     django_user = models.OneToOneField(User)
-    phpbb_user = models.ForeignKey(ForumUser, unique=True)
+    phpbb_user = models.ForeignKey(PhpbbUser, unique=True)
 
 
-class ForumForum(models.Model):
+class PhpbbForum(models.Model):
     forum_id = models.IntegerField(primary_key=True)
     forum_name = models.CharField(max_length=60)
     forum_topics = models.IntegerField()
     forum_posts = models.IntegerField()
     forum_last_post = models.ForeignKey(
-            'ForumPost', db_column='forum_last_post_id')
+            'PhpbbPost', db_column='forum_last_post_id')
     forum_desc = models.TextField()
     def __unicode__(self):
         return force_unicode(self.forum_name)
@@ -73,15 +73,15 @@ class ForumForum(models.Model):
         ordering = ['forum_name']
 
 
-class ForumTopic(models.Model):
+class PhpbbTopic(models.Model):
     topic_id = models.IntegerField(primary_key=True)
     topic_title = models.CharField(max_length=60)
     topic_replies = models.IntegerField()
-    topic_poster = models.ForeignKey(ForumUser, db_column='topic_poster')
+    topic_poster = models.ForeignKey(PhpbbUser, db_column='topic_poster')
     topic_time_int = models.IntegerField(db_column='topic_time')
-    forum = models.ForeignKey(ForumForum)
-    topic_last_post = models.ForeignKey('ForumPost', related_name='last_in')
-    topic_first_post = models.ForeignKey('ForumPost', related_name='first_in')
+    forum = models.ForeignKey(PhpbbForum)
+    topic_last_post = models.ForeignKey('PhpbbPost', related_name='last_in')
+    topic_first_post = models.ForeignKey('PhpbbPost', related_name='first_in')
     def get_title(self):
         return self.topic_title
     def __unicode__(self):
@@ -97,13 +97,13 @@ class ForumTopic(models.Model):
         ordering = ['-topic_time_int']
 
 
-class ForumPost(models.Model):
+class PhpbbPost(models.Model):
     """phpBB3 forum post."""
     PAGINATE_BY = 10
     post_id = models.IntegerField(primary_key=True)
     # post_title = models.CharField(max_length = 60)
-    topic = models.ForeignKey(ForumTopic)
-    poster = models.ForeignKey(ForumUser)
+    topic = models.ForeignKey(PhpbbTopic)
+    poster = models.ForeignKey(PhpbbUser)
     post_time_int = models.IntegerField(db_column='post_time')
     post_text = models.TextField()
     def post_time(self):
@@ -126,7 +126,7 @@ class ForumPost(models.Model):
         ordering = ['post_time_int']
 
 
-class ForumAclOption(models.Model):
+class PhpbbAclOption(models.Model):
     auth_option_id = models.IntegerField(primary_key=True)
     is_global = models.IntegerField()
     is_local = models.IntegerField()
@@ -137,7 +137,7 @@ class ForumAclOption(models.Model):
         ordering = ['auth_option']
 
 
-class ForumAclRole(models.Model):
+class PhpbbAclRole(models.Model):
     role_id = models.IntegerField(primary_key=True)
     role_name = models.CharField(max_length=255)
     role_order = models.IntegerField()
@@ -146,10 +146,23 @@ class ForumAclRole(models.Model):
         ordering = ['role_order']
 
 
-class ForumAclRoleData(models.Model):
-    role_id = models.ForeignKey('ForumAclRole', db_column='role_id')
+class PhpbbAclRoleData(models.Model):
+    role_id = models.ForeignKey('PhpbbAclRole', db_column='role_id')
     auth_option_id = models.ForeignKey(
-        'ForumAclOption', db_column='auth_option_id')
+        'PhpbbAclOption', db_column='auth_option_id')
     auth_setting = models.IntegerField()
     class Meta:
         db_table = 'phpbb3_acl_roles_data'
+
+
+class PhpbbConfig(models.Model):
+    config_name = models.CharField(max_length=255, primary_key=True)
+    config_value = models.CharField(max_length=255)
+    is_dynamic = models.IntegerField()
+    def __unicode__(self):
+        return self.config_name
+    class Meta:
+        db_table = 'phpbb3_config'
+        ordering = ['config_name']
+        verbose_name = 'config entry'
+        verbose_name_plural = 'config entries'
