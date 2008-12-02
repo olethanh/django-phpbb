@@ -115,8 +115,10 @@ class PhpbbPost(models.Model):
     def __unicode__(self):
         return force_unicode(u" (post_id=%s)" % self.post_id)
     def get_external_url(self):
-        return ("http://www.atopowe-zapalenie.pl/forum/viewtopic.php?p=%s#%s" %
-                (self.post_id, self.post_id))
+        # Example:
+        # http://www.atopowe-zapalenie.pl/forum/viewtopic.php?p=80491#p80491
+        return ("http://www.atopowe-zapalenie.pl/forum/viewtopic.php?p=%s#p%s"
+                % (self.post_id, self.post_id))
     def get_absolute_url(self):
         return (u"/forum/topics/%s/%s/page%d/" %
                 (self.topic.topic_id,
