@@ -23,6 +23,7 @@ from django.contrib.phpbb.utils import slugify
 from datetime import datetime
 from django.core import exceptions
 from django.utils.encoding import force_unicode
+from django.utils.translation import gettext_lazy as _
 
 class PhpbbUser(models.Model):
     user_id = models.IntegerField(primary_key=True)
@@ -91,7 +92,10 @@ class PhpbbTopic(models.Model):
     def __unicode__(self):
         return self.get_title()
     def get_absolute_url(self):
-        return "/forum/topics/%s/%s/" % (self.topic_id, self.get_slug())
+        return "/forum/%s/%s/%s/" % (
+        		_("topics"),
+        		self.topic_id,
+        		self.get_slug())
     def get_slug(self):
         return slugify(self.get_title())
     def topic_time(self):

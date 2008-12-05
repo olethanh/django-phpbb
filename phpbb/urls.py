@@ -18,6 +18,7 @@
 # Boston, MA  02110-1301  USA
 
 from django.conf.urls.defaults import *
+from django.utils.translation import gettext_lazy as _
 import views
 import models
 
@@ -30,10 +31,10 @@ forumqs = (models.PhpbbForum.objects.exclude(forum_name='INDEX PAGE').
 urlpatterns = patterns('',
     (r'^$', 'django.views.generic.list_detail.object_list',
         {'queryset': forumqs, }),
-    (r'^topics/(?P<topic_id>[0-9]+)/(?P<slug>[\w-]*)/page(?P<page_no>[0-9]+)/$',
-        'django.contrib.phpbb.views.topic', ),
-    (r'^topics/(?P<topic_id>[0-9]+)/(?P<slug>[\w-]*)/$',
-        'django.contrib.phpbb.views.topic', ),
+    (r'^%s/(?P<topic_id>[0-9]+)/(?P<slug>[\w-]*)/page(?P<page_no>[0-9]+)/$' % (
+    	    _("topics"),), 'django.contrib.phpbb.views.topic', ),
+    (r'^%s/(?P<topic_id>[0-9]+)/(?P<slug>[\w-]*)/$' % (
+    	    _("topics"),), 'django.contrib.phpbb.views.topic', ),
     (r'^(?P<forum_id>[0-9]+)/(?P<slug>[\w-]*)/$',
         'django.contrib.phpbb.views.forum_index', ),
     (r'^(?P<forum_id>[0-9]+)/(?P<slug>[\w-]*)/page(?P<page_no>[0-9]+)/$',
