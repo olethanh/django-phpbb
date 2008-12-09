@@ -17,13 +17,20 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA  02110-1301  USA
 
-from models import PhpbbForum, PhpbbTopic, PhpbbPost
+from models import PhpbbForum, PhpbbTopic, PhpbbPost, PhpbbConfig
 from django.http import HttpResponseRedirect, Http404
 from django.template.context import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.paginator import Paginator, InvalidPage
 from django.core import exceptions
 
+def phpbb_config_context(request):
+    sitename = PhpbbConfig.objects.get(pk='sitename')
+    site_desc = PhpbbConfig.objects.get(pk='site_desc')
+    return {
+            'sitename': sitename.config_value,
+            'site_desc': site_desc.config_value,
+    }
 
 def forum_index(request, forum_id, slug, page_no = None, paginate_by = 10):
     if page_no:
@@ -67,11 +74,11 @@ def forum_index(request, forum_id, slug, page_no = None, paginate_by = 10):
             'pages': paginator.num_pages,
             'hits' : 'what hits?',
             'page_list': range(1, paginator.num_pages + 1),
-    })
+    }, [phpbb_config_context])
     return render_to_response("phpbb/forum_detail.html", {
         'object': f,
         'topics': page.object_list,
-        }, context_instance = c)
+        }, context_instance=c)
 
 
 def topic(request, topic_id, slug, page_no = None, paginate_by = 10):
@@ -114,19 +121,20 @@ def topic(request, topic_id, slug, page_no = None, paginate_by = 10):
             'pages': paginator.num_pages,
             'hits' : "hits? what hits?",
             'page_list': range(1, paginator.num_pages + 1),
-    })
+    }, [phpbb_config_context])
     return render_to_response("phpbb/topic_detail.html", {
         'object': t,
         'posts': page.object_list,
-        }, context_instance = c)
+        }, context_instance=c)
 
 
 def unanswered(request):
     topics = PhpbbTopic.objects.filter(topic_replies = 0)
+    c = RequestContext(request, {}, [phpbb_config_context])
     return render_to_response(
             "phpbb/unanswered.html",
             {'topics': topics,},
-            context_instance = RequestContext(request))
+            context_instance=c)
 
 
 def handle_viewtopic(request):

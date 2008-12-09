@@ -67,3 +67,12 @@ def withlink(obj):
 
 register.filter('bbcode', bbcode)
 register.filter('withlink', withlink)
+
+class BaseForumNode(template.Node):
+    pass
+
+def forum_list(parser, token):
+    """Gets list of forums."""
+    pass
+
+register.tag(forum_list)

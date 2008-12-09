@@ -1,5 +1,6 @@
 {% extends "phpbb/forum_detail.html" %}
 {% block content %}
+{% load i18n %}
 {% load phpbb %}
 <ul class="posts">
 {% for topic in topics %}
@@ -7,9 +8,9 @@
 <strong>{{ topic.get_title }}</strong>
 ({{ topic.topic_first_post.poster }})
 <br />
-{{ topic.topic_first_post.forumposttext.get_post_text|bbcode }}
+{{ topic.topic_first_post.post_text|bbcode }}
 <br />
-<a href="{{  topic.topic_first_post.get_external_url }}" class="answer">odpowiedz</a>
+<a href="{{  topic.topic_first_post.get_external_url }}" class="answer">{% trans "answer" %}</a>
 </li>
 {% endfor %}
 </ul>

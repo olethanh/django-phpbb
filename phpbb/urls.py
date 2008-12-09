@@ -28,9 +28,13 @@ forumqs = (models.PhpbbForum.objects.exclude(forum_name='INDEX PAGE').
            exclude(forum_id=15).
            exclude(forum_id=6))
 
+forum_context = views.phpbb_config_context(None)
+
 urlpatterns = patterns('',
+    # TODO: add context with Django config
     (r'^$', 'django.views.generic.list_detail.object_list',
-        {'queryset': forumqs, }),
+        {'queryset': forumqs,
+         'extra_context': forum_context}),
     (r'^%s/(?P<topic_id>[0-9]+)/(?P<slug>[\w-]*)/page(?P<page_no>[0-9]+)/$' % (
     	    _("topics"),), 'django.contrib.phpbb.views.topic', ),
     (r'^%s/(?P<topic_id>[0-9]+)/(?P<slug>[\w-]*)/$' % (

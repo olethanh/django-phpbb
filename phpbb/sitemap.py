@@ -28,12 +28,16 @@ class PhpbbForumSitemap(sitemaps.Sitemap):
         return forumqs
 
 class PhpbbTopicSitemap(sitemaps.Sitemap):
-    changefreq = "monthly"
+    changefreq = "weekly"
     priority = 0.4
+    limit = 500
     def items(self):
-        return PhpbbTopic.objects.exclude(forum__forum_id=15).exclude(forum__forum_id=6)
+        return (PhpbbTopic.
+                objects.
+                exclude(forum__forum_id=15).
+                exclude(forum__forum_id=6))
     def lastmod(self, obj):
         try:
-            return obj.topic_last_post.get_time()
+            return obj.topic_last_post.post_time()
         except PhpbbPost.DoesNotExist:
             return None

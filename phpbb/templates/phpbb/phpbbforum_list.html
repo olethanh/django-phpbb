@@ -20,7 +20,7 @@ Jeżeli chcesz pisać, zapraszamy
   <li>
   <span class="forum_name"><a href="{{ object.get_absolute_url }}">{{ object }}</a></span>
 	  <br />
-	  <span class="forum_description">{{ object.get_desc }}</span><br/></li>
+	  <span class="forum_description">{{ object.forum_desc }}</span><br/></li>
   {% endfor %}
 </ul>
 {% endblock %}

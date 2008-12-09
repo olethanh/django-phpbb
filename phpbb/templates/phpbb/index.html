@@ -4,8 +4,11 @@ This template assumes you have a 'base.html' file that can be extended.
 {% endcomment %}
 {% load phpbb %}
 {% load i18n %}
+{% block sitetitle %}
+{{ sitename }}
+{% endblock %}
 {% block subtitle %}
-{% trans "Discussion forum" %}
+{{ site_desc }}
 {% endblock %}
 
 {% block sidebar %}

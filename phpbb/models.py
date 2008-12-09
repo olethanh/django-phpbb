@@ -18,6 +18,7 @@
 # Boston, MA  02110-1301  USA
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.phpbb.utils import slugify
 from datetime import datetime
@@ -60,11 +61,18 @@ class PhpbbForum(models.Model):
     forum_name = models.CharField(max_length=60)
     forum_topics = models.IntegerField()
     forum_posts = models.IntegerField()
-    forum_last_post = models.ForeignKey(
-            'PhpbbPost', db_column='forum_last_post_id')
+    forum_last_post = models.OneToOneField(
+            'PhpbbPost',
+            db_column='forum_last_post_id',
+            related_name="last_post_of_forum")
     forum_desc = models.TextField()
+    parent = models.ForeignKey('self', related_name="child")
+    left = models.OneToOneField('self', related_name="right_of")
+    right = models.OneToOneField('self', related_name="left_of")
     def __unicode__(self):
         return force_unicode(self.forum_name)
+    def __str__(self):
+        return str(self.forum_name)
     def get_absolute_url(self):
         return u"/forum/%s/%s/" % (self.forum_id, self.get_slug())
     def get_slug(self):
@@ -81,8 +89,12 @@ class PhpbbTopic(models.Model):
     topic_poster = models.ForeignKey(PhpbbUser, db_column='topic_poster')
     topic_time_int = models.IntegerField(db_column='topic_time')
     forum = models.ForeignKey(PhpbbForum)
-    topic_last_post = models.ForeignKey('PhpbbPost', related_name='last_in')
-    topic_first_post = models.ForeignKey('PhpbbPost', related_name='first_in')
+    topic_last_post = models.OneToOneField(
+            'PhpbbPost',
+            related_name='last_post_of_topic')
+    topic_first_post = models.OneToOneField(
+            'PhpbbPost',
+            related_name='first_post_of_topic')
     topic_last_post_time_int = models.IntegerField(
             db_column='topic_last_post_time')
     def get_title(self):
@@ -111,6 +123,7 @@ class PhpbbPost(models.Model):
     post_id = models.IntegerField(primary_key=True)
     # post_title = models.CharField(max_length = 60)
     topic = models.ForeignKey(PhpbbTopic)
+    forum = models.ForeignKey(PhpbbForum)
     poster = models.ForeignKey(PhpbbUser)
     post_time_int = models.IntegerField(db_column='post_time')
     post_text = models.TextField()
@@ -124,8 +137,9 @@ class PhpbbPost(models.Model):
         return ("http://www.atopowe-zapalenie.pl/forum/viewtopic.php?p=%s#p%s"
                 % (self.post_id, self.post_id))
     def get_absolute_url(self):
-        return (u"/forum/topics/%s/%s/page%d/" %
-                (self.topic.topic_id,
+        return (u"/forum/%s/%s/%s/page%d/" %
+                (_("topics"),
+                 self.topic.topic_id,
                  self.topic.get_slug(),
                  self.get_page()))
     def get_page(self):
