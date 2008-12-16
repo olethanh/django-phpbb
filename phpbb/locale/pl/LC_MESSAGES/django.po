@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-05 09:47+0000\n"
+"POT-Creation-Date: 2008-12-16 07:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,9 +20,13 @@ msgstr ""
 msgid "Newest posts on the forum."
 msgstr "Najnowsze posty na forum."
 
-#: models.py:96
+#: models.py:109 models.py:142 urls.py:38 urls.py:40
 msgid "topics"
 msgstr "tematy"
+
+#: urls.py:47 templates/phpbb/phpbbforum_list.html:16
+msgid "unanswered"
+msgstr "bez-odpowiedzi"
 
 #: templates/phpbb/forum_detail.html:31
 msgid "answers"
@@ -35,10 +39,6 @@ msgstr "ost."
 #: templates/phpbb/forum_detail.html:31
 msgid "ago"
 msgstr "temu"
-
-#: templates/phpbb/index.html:8
-msgid "Discussion forum"
-msgstr "Forum dyskusyjne"
 
 #: templates/phpbb/phpbbforum_list.html:7
 msgid "Forum"
@@ -54,4 +54,11 @@ msgstr "Strona Główna"
 
 #: templates/phpbb/phpbbforum_list.html:16
 msgid "Unanswered topics"
-msgstr "Bez odpowiedzi"
+msgstr "Posty bez odpowiedzi"
+
+#: templates/phpbb/unanswered.html:13
+msgid "answer"
+msgstr "odpowiedz"
+
+#~ msgid "Discussion forum"
+#~ msgstr "Forum dyskusyjne"

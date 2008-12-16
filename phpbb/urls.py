@@ -22,11 +22,10 @@ from django.utils.translation import gettext_lazy as _
 import views
 import models
 
-forumqs = (models.PhpbbForum.objects.exclude(forum_name='INDEX PAGE').
-           exclude(forum_name='MEMBERLIST').
+forumqs = (models.PhpbbForum.objects.
            # FIXME: hardcoded forum IDs
            exclude(forum_id=15).
-           exclude(forum_id=6))
+           exclude(forum_id=6).filter(parent__forum_id=0))
 
 forum_context = views.phpbb_config_context(None)
 
@@ -45,6 +44,6 @@ urlpatterns = patterns('',
         'django.contrib.phpbb.views.forum_index', ),
     (r'^(?P<forum_id>[0-9]+)/$',
         'django.contrib.phpbb.views.forum_index', {'slug': ''}),
-    (r'^unanswered/$', 'django.contrib.phpbb.views.unanswered', ),
+    (r'^%s/$' % (_("unanswered"),), 'django.contrib.phpbb.views.unanswered', ),
     (r'^viewtopic.php$', 'django.contrib.phpbb.views.handle_viewtopic', ),
 )

@@ -27,6 +27,7 @@ from django.utils.encoding import force_unicode
 from django.utils.translation import gettext_lazy as _
 
 class PhpbbUser(models.Model):
+    """Model for phpBB user."""
     user_id = models.IntegerField(primary_key=True)
     username = models.CharField(max_length=25)
     user_password = models.CharField(max_length=32)
