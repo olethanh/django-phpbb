@@ -17,19 +17,24 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA  02110-1301  USA
 
+# TODO: Implement sitemap caching.
+
 from django.contrib import sitemaps
 from models import PhpbbTopic, PhpbbPost, PhpbbForum
 from urls import forumqs
 
 class PhpbbForumSitemap(sitemaps.Sitemap):
-    changefreq = "monthly"
-    priority = 0.4
     def items(self):
         return forumqs
+    def lastmod(self, obj):
+        try:
+            return obj.forum_last_post.post_time()
+        except PhpbbPost.DoesNotExist: 
+            return None
 
 class PhpbbTopicSitemap(sitemaps.Sitemap):
-    changefreq = "weekly"
-    priority = 0.4
+    # Default limit value is too high; requests retrieving thousands of posts
+    # take a long time to execute.
     limit = 500
     def items(self):
         return (PhpbbTopic.
