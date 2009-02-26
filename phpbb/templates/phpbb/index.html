@@ -13,7 +13,7 @@ This template assumes you have a 'base.html' file that can be extended.
 
 {% block sidebar %}
       {% if last_forum_posts %}
-      <h3>Obecnie na forum</h3>
+      <h3>{% trans "Who is online" %}</h3>
       <ul class="comments">
       {% for post in last_forum_posts %}
       <li id="post-{{ post.post_id }}">

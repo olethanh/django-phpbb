@@ -19,7 +19,7 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 
 {% block content %}
 <h2>{{ object }}</h2>
-<a href="../../../"><strong>Forum Atopowe Zapalenie Skóry Strona Główna</strong></a>
+<a href="../../../"><strong>{% trans "Forum main page" %}</strong></a>
 →
 <a href="{{ object.forum.get_absolute_url }}"><strong>{{ object.forum }}</strong></a>
 {% if is_paginated %}
