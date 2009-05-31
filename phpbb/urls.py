@@ -31,9 +31,9 @@ forum_context = views.phpbb_config_context(None)
 
 urlpatterns = patterns('',
     # TODO: add context with Django config
-    (r'^$', 'django.views.generic.list_detail.object_list',
-        {'queryset': forumqs,
-         'extra_context': forum_context}),
+    # (r'^$', 'django.views.generic.list_detail.object_list',
+    #     {'queryset': forumqs,
+    #      'extra_context': forum_context}),
     (r'^%s/(?P<topic_id>[0-9]+)/(?P<slug>[\w-]*)/page(?P<page_no>[0-9]+)/$' % (
     	    _("topics"),), 'django.contrib.phpbb.views.topic', ),
     (r'^%s/(?P<topic_id>[0-9]+)/(?P<slug>[\w-]*)/$' % (

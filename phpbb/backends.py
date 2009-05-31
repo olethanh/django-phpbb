@@ -22,7 +22,15 @@ from django.contrib.auth.models import User
 from models import PhpbbUser
 import password as php_password
 
+from django.conf import settings
+
 logging.basicConfig(level=logging.DEBUG)
+logging.debug(str(getattr(settings, 'DEBUG', True)))
+if getattr(settings, 'DEBUG', True):
+    logging_level = logging.DEBUG
+else:
+    logging_level = logging.FATAL
+logging.basicConfig(level=logging_level)
 
 class PhpbbBackend:
 
@@ -37,7 +45,7 @@ class PhpbbBackend:
             phpbb_user = PhpbbUser.objects.get(username = username)
         except PhpbbUser.DoesNotExist:
             # The user does not exist in phpBB. Bailing out.
-            logging.warning("User '%s' doesn't exist." % username)
+            logging.info("User '%s' doesn't exist." % username)
             return None
         phpbb_checker = php_password.PhpbbPassword()
         if phpbb_checker.phpbb_check_hash(password, phpbb_user.user_password):
@@ -45,7 +53,7 @@ class PhpbbBackend:
                          "with phpBB database." % username)
         else:
             # Invalid password
-            logging.warning("Wrong password for user %s" % username)
+            logging.info("Wrong password for user %s" % username)
             return None
         # At this point we have successfully checked phpBB user password.
         # Now we're getting and returning Django user. If necessary, we're

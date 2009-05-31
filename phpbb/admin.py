@@ -18,11 +18,7 @@
 # Boston, MA  02110-1301  USA
 
 from django.contrib import admin
-from django.contrib.phpbb.models import PhpbbForum
-from django.contrib.phpbb.models import PhpbbPost
-from django.contrib.phpbb.models import PhpbbTopic
-from django.contrib.phpbb.models import PhpbbUser
-from django.contrib.phpbb.models import PhpbbConfig
+from django.contrib.phpbb import models as pm
 
 class PhpbbForumAdmin(admin.ModelAdmin):
     list_display = (
@@ -30,26 +26,44 @@ class PhpbbForumAdmin(admin.ModelAdmin):
             'forum_id',
             'forum_desc',
             )
-admin.site.register(PhpbbForum, PhpbbForumAdmin)
+admin.site.register(pm.PhpbbForum, PhpbbForumAdmin)
 class PhpbbTopicAdmin(admin.ModelAdmin):
     list_display = (
         'topic_title',
         'topic_id',
         'topic_time',
     )
-admin.site.register(PhpbbTopic, PhpbbTopicAdmin)
+admin.site.register(pm.PhpbbTopic, PhpbbTopicAdmin)
 class PhpbbPostAdmin(admin.ModelAdmin):
     list_display = ('post_id', 'get_absolute_url', 'post_time', )
-admin.site.register(PhpbbPost, PhpbbPostAdmin)
+admin.site.register(pm.PhpbbPost, PhpbbPostAdmin)
 class PhpbbUserAdmin(admin.ModelAdmin):
     list_display = ('username',
                     'user_id',
                     'user_regdate',
                     'user_posts',
                     'user_email', )
-admin.site.register(PhpbbUser, PhpbbUserAdmin)
+admin.site.register(pm.PhpbbUser, PhpbbUserAdmin)
 class PhpbbConfigAdmin(admin.ModelAdmin):
     list_display = ('config_name',
                     'config_value',
                     'is_dynamic')
-admin.site.register(PhpbbConfig, PhpbbConfigAdmin)
+admin.site.register(pm.PhpbbConfig, PhpbbConfigAdmin)
+class PhpbbAclRoleAdmin(admin.ModelAdmin):
+    pass
+    # list_display = ('role_id',
+    #                 'role_name',
+    #                 'role_description',
+    #                 'role_type',
+    #                 'role_order')
+admin.site.register(pm.PhpbbAclRole, PhpbbAclRoleAdmin)
+class PhpbbAclRoleOptionAdmin(admin.ModelAdmin):
+    pass
+    # list_display = ('auth_option_id',
+    #                 'auth_option',
+    #                 'auth_global')
+admin.site.register(pm.PhpbbAclOption, PhpbbAclRoleOptionAdmin)
+admin.site.register(pm.PhpbbAclRoleDatum)
+# Composite keys support needed
+# admin.site.register(pm.PhpbbAclGroup)
+admin.site.register(pm.PhpbbGroup)

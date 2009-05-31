@@ -37,7 +37,7 @@ class PhpbbUser(models.Model):
     user_avatar_type = models.IntegerField()
     user_avatar = models.CharField(max_length=250)
     user_regdate_int = models.IntegerField(db_column="user_regdate")
-    user_lastvisit_int = models.IntegerField(db_column="user_regdate")
+    user_lastvisit_int = models.IntegerField(db_column="user_lastvisit")
     user_sig_bbcode_uid = models.CharField(max_length=8)
     user_sig_bbcode_bitfield = models.CharField(max_length=255)
     def __unicode__(self):
@@ -151,33 +151,89 @@ class PhpbbPost(models.Model):
         ordering = ['post_time_int']
 
 
-class PhpbbAclOption(models.Model):
-    auth_option_id = models.IntegerField(primary_key=True)
-    is_global = models.IntegerField()
-    is_local = models.IntegerField()
-    founder_only = models.IntegerField()
-    auth_option = models.CharField(max_length=60)
+class PhpbbGroup(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='group_id')
+    group_type = models.IntegerField()
+    group_founder_manage = models.IntegerField()
+    group_name = models.CharField(max_length=255)
+    group_desc = models.TextField()
+    group_desc_bitfield = models.CharField(max_length=255)
+    group_desc_options = models.IntegerField()
+    def __unicode__(self):
+        return u"PhpbbGroup(%s, %s)" % (self.id, self.group_name)
     class Meta:
-        db_table = 'phpbb3_acl_options'
-        ordering = ['auth_option']
+        db_table = 'phpbb3_groups'
+        ordering = ['id']
 
 
 class PhpbbAclRole(models.Model):
     role_id = models.IntegerField(primary_key=True)
     role_name = models.CharField(max_length=255)
+    role_description = models.TextField()
+    role_type = models.CharField(max_length=10)
     role_order = models.IntegerField()
+    def __unicode__(self):
+        return force_unicode(self.role_name)
     class Meta:
         db_table = 'phpbb3_acl_roles'
-        ordering = ['role_order']
+        ordering = ['role_name']
 
 
-class PhpbbAclRoleData(models.Model):
-    role_id = models.ForeignKey('PhpbbAclRole', db_column='role_id')
-    auth_option_id = models.ForeignKey(
-        'PhpbbAclOption', db_column='auth_option_id')
-    auth_setting = models.IntegerField()
+class PhpbbAclOption(models.Model):
+    auth_option_id = models.IntegerField(primary_key=True)
+    auth_option = models.CharField(max_length=60)
+    is_global = models.IntegerField()
+    is_local = models.IntegerField()
+    founder_only = models.IntegerField()
+    def __unicode__(self):
+        return self.auth_option
     class Meta:
-        db_table = 'phpbb3_acl_roles_data'
+        db_table = 'phpbb3_acl_options'
+        ordering = ['auth_option_id']
+
+
+# These classes would need Django to support composite keys. There is a fork of
+# Django with a partial implementation:
+# http://github.com/dcramer/django-compositepks/tree/master
+#
+# However, this class is now kept commented out to allow to use django-phpbb
+# with the main django branch.
+#
+## class PhpbbAclRoleDatum(models.Model):
+##     role_id = models.ForeignKey(PhpbbAclRole,
+##                                 db_column='role_id')
+##     auth_option = models.ForeignKey(PhpbbAclOption,
+##     		                           db_column='auth_option_id')
+##     auth_setting = models.IntegerField()
+##     def __unicode__(self):
+##         return u"%s, %s => %s" % (self.role_id,
+##                                   self.auth_option,
+##                                   self.auth_setting)
+##     class Meta:
+##         primary_key = ('role_id', 'auth_option')
+##         db_table = 'phpbb3_acl_roles_data'
+##         verbose_name_plural = 'Phpbb acl role data'
+##         unique_together = (('role_id', 'auth_option'),)
+## 
+## 
+## class PhpbbAclGroup(models.Model):
+##     group = models.ForeignKey(PhpbbGroup, db_column="group_id")
+##     forum = models.ForeignKey(PhpbbForum, db_column="forum_id")
+##     auth_option = models.ForeignKey(PhpbbAclOption,
+##     		                    db_column="auth_option_id")
+##     auth_role = models.ForeignKey(PhpbbAclRole,
+##     		                  db_column="auth_role_id")
+##     auth_setting = models.IntegerField()
+##     def __unicode__(self):
+##         return ((u"PhpbbAclGroup(%s, %s, %s, %s)")
+##                 % (self.forum,
+##                    self.group,
+##                    self.auth_option,
+##                    self.auth_setting))
+##     class Meta:
+##         primary_key = ('forum', 'group', 'auth_option', 'auth_role')
+##         db_table = 'phpbb3_acl_groups'
+##         ordering = ['group', 'auth_role']
 
 
 class PhpbbConfig(models.Model):
@@ -189,5 +245,5 @@ class PhpbbConfig(models.Model):
     class Meta:
         db_table = 'phpbb3_config'
         ordering = ['config_name']
-        verbose_name = 'config entry'
-        verbose_name_plural = 'config entries'
+        verbose_name = 'Phpbb config entry'
+        verbose_name_plural = 'Phpbb config entries'

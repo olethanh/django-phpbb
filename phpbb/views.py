@@ -25,11 +25,15 @@ from django.core.paginator import Paginator, InvalidPage
 from django.core import exceptions
 
 def phpbb_config_context(request):
-    sitename = PhpbbConfig.objects.get(pk='sitename')
-    site_desc = PhpbbConfig.objects.get(pk='site_desc')
+    try:
+        sitename = PhpbbConfig.objects.get(pk='sitename').config_value
+        site_desc = PhpbbConfig.objects.get(pk='site_desc').config_value
+    except PhpbbConfig.DoesNotExist, e:
+        sitename = "PhpBB site"
+        site_desc = "A forum: %s" % e
     return {
-            'sitename': sitename.config_value,
-            'site_desc': site_desc.config_value,
+            'sitename': sitename,
+            'site_desc': site_desc,
     }
 
 def forum_index(request, forum_id, slug, page_no = None, paginate_by = 10):
