@@ -18,7 +18,7 @@
 # Boston, MA  02110-1301  USA
 
 from django.contrib import admin
-from django.contrib.phpbb import models as pm
+from phpbb import models as pm
 
 class PhpbbForumAdmin(admin.ModelAdmin):
     list_display = (
