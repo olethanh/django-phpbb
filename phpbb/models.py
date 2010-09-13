@@ -47,7 +47,7 @@ class PhpbbUser(models.Model):
     def user_lastvisit(self):
         return datetime.fromtimestamp(self.user_lastvisit_int)
     class Meta:
-        db_table = 'phpbb3_users'
+        db_table = 'phpbb_users'
         ordering = ['username']
 
 
@@ -79,7 +79,7 @@ class PhpbbForum(models.Model):
     def get_slug(self):
         return slugify(self.forum_name)
     class Meta:
-        db_table = 'phpbb3_forums'
+        db_table = 'phpbb_forums'
         ordering = ['forum_name']
 
 
@@ -114,7 +114,7 @@ class PhpbbTopic(models.Model):
     def topic_time(self):
         return datetime.fromtimestamp(self.topic_time_int)
     class Meta:
-        db_table = 'phpbb3_topics'
+        db_table = 'phpbb_topics'
         ordering = ['-topic_time_int']
 
 
@@ -147,7 +147,7 @@ class PhpbbPost(models.Model):
         """TODO: find out, which post in the row it is."""
         return 1
     class Meta:
-        db_table = 'phpbb3_posts'
+        db_table = 'phpbb_posts'
         ordering = ['post_time_int']
 
 
@@ -162,7 +162,7 @@ class PhpbbGroup(models.Model):
     def __unicode__(self):
         return u"PhpbbGroup(%s, %s)" % (self.id, self.group_name)
     class Meta:
-        db_table = 'phpbb3_groups'
+        db_table = 'phpbb_groups'
         ordering = ['id']
 
 
@@ -175,7 +175,7 @@ class PhpbbAclRole(models.Model):
     def __unicode__(self):
         return force_unicode(self.role_name)
     class Meta:
-        db_table = 'phpbb3_acl_roles'
+        db_table = 'phpbb_acl_roles'
         ordering = ['role_name']
 
 
@@ -188,7 +188,7 @@ class PhpbbAclOption(models.Model):
     def __unicode__(self):
         return self.auth_option
     class Meta:
-        db_table = 'phpbb3_acl_options'
+        db_table = 'phpbb_acl_options'
         ordering = ['auth_option_id']
 
 
@@ -211,7 +211,7 @@ class PhpbbAclOption(models.Model):
 ##                                   self.auth_setting)
 ##     class Meta:
 ##         primary_key = ('role_id', 'auth_option')
-##         db_table = 'phpbb3_acl_roles_data'
+##         db_table = 'phpbb_acl_roles_data'
 ##         verbose_name_plural = 'Phpbb acl role data'
 ##         unique_together = (('role_id', 'auth_option'),)
 ## 
@@ -232,7 +232,7 @@ class PhpbbAclOption(models.Model):
 ##                    self.auth_setting))
 ##     class Meta:
 ##         primary_key = ('forum', 'group', 'auth_option', 'auth_role')
-##         db_table = 'phpbb3_acl_groups'
+##         db_table = 'phpbb_acl_groups'
 ##         ordering = ['group', 'auth_role']
 
 
@@ -243,7 +243,7 @@ class PhpbbConfig(models.Model):
     def __unicode__(self):
         return self.config_name
     class Meta:
-        db_table = 'phpbb3_config'
+        db_table = 'phpbb_config'
         ordering = ['config_name']
         verbose_name = 'Phpbb config entry'
         verbose_name_plural = 'Phpbb config entries'
