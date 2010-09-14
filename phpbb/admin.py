@@ -63,7 +63,7 @@ class PhpbbAclRoleOptionAdmin(admin.ModelAdmin):
     #                 'auth_option',
     #                 'auth_global')
 admin.site.register(pm.PhpbbAclOption, PhpbbAclRoleOptionAdmin)
-admin.site.register(pm.PhpbbAclRoleDatum)
+#admin.site.register(pm.PhpbbAclRoleDatum)
 # Composite keys support needed
 # admin.site.register(pm.PhpbbAclGroup)
 admin.site.register(pm.PhpbbGroup)
