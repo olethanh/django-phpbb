@@ -25,6 +25,7 @@ from datetime import datetime
 from django.core import exceptions
 from django.utils.encoding import force_unicode
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 
 class PhpbbUser(models.Model):
     """Model for phpBB user."""
@@ -135,8 +136,9 @@ class PhpbbPost(models.Model):
     def get_external_url(self):
         # Example:
         # http://www.atopowe-zapalenie.pl/forum/viewtopic.php?p=80491#p80491
-        return ("http://www.atopowe-zapalenie.pl/forum/viewtopic.php?p=%s#p%s"
+        return (settings.PHPBB_URL + "/viewtopic.php?p=%s#p%s"
                 % (self.post_id, self.post_id))
+
     def get_absolute_url(self):
         return (u"/forum/%s/%s/%s/page%d/" %
                 (_("topics"),
