@@ -17,62 +17,53 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA  02110-1301  USA
 
-from django import template
 import re
+
+from django.template.defaultfilters import stringfilter
+from django import template
 
 register = template.Library()
 
-# @register.filter
+
+SUBS = (
+        # URLS
+        (r'\[url=([^\]]*)\]([^\[]*)\[/url\]', r'<a href="\1">\2</a>'),
+        (r'\[url\]([^\[]*)\[/url\]', r'<a href="\1">\1</a>'),
+        # IMG
+        (r'\[img:\w+\]([^\[]*)\[/img:\w+\]', r'<img src="\1" />'),
+        # [u], [i], [b]
+        (r'\[b:[^\]]*\]([^\[]*)\[/b:[^\]]*\]', r'<b>\1</b>'),
+        (r'\[i:[^\]]*\]([^\[]*)\[/i:[^\]]*\]', r'<i>\1</i>'),
+        (r'\[u:[^\]]*\]([^\[]*)\[/u:[^\]]*\]', r'<u>\1</u>'), #DEPRECATED, FIXME
+        #quote
+        (r'\[quote:\w+\]([^\[]*)\[/quote:\w+\]', r'<blockquote>\1</blockquote>'),
+        (r'\[quote:\w+="([\w\s]+)"\]([^\[]*)\[/quote:\w+\]', r'<blockquote><strong>\1:</strong><br /> \2</blockquote>'),
+        # size
+        (r'\[size=([0-9]+):\w+\](.*)\[/size:\w+\]', r'<font size="\1">\2</font>'),
+        # Automatically convert http:// in url
+        (r'(\s)http://([\w,.?=%/-]+)', r'<a href="\2">\2</a>(\s)'),
+        ## No idea, really
+        #(r'\?+', r'?'),
+        # Remove HTML comment tags
+        (r'<![^>]+>', r' '),
+        (r'<img[^>]+>', r' '),
+        (r'<a[^>]+>', r' '),
+        (r'</[^>]+>', r' '),
+        )
+
+# Compiled subs
+CSUBS = [(re.compile(a),b) for a,b in SUBS]
+
+@register.filter
+@stringfilter
 def bbcode(s):
-    # s = re.sub(r'\[quote:\w+\]([^\[]*)\[/quote:\w+\]', r'<blockquote>\1</blockquote>', s)
-    s = re.sub(r'\[quote:\w+\]([^\[]*)\[/quote:\w+\]', r'<blockquote>\1</blockquote>', s)
-    s = re.sub(r'\[quote:\w+="([\w\s]+)"\]([^\[]*)\[/quote:\w+\]', r'<blockquote><strong>\1:</strong><br /> \2</blockquote>', s)
-    # s = re.sub(r'\[size=([0-9]+):\w+\](.*)\[/size:\w+\]', r'<font size="\1">\2</font>', s)
-    s = re.sub(r'\[b:[^\]]*\]([^\[]*)\[/b:[^\]]*\]', r'<b>\1</b>', s)
-    s = re.sub(r'\[i:[^\]]*\]([^\[]*)\[/i:[^\]]*\]', r'<i>\1</i>', s)
-    # s = re.sub(r'(\s)http://([\w,.?=%/-]+)', r'<a href="\2">\2</a>(\s)', s)
-    s = re.sub(r'\[url=([^\]]*)\]([^\[]*)\[/url\]', r'<a href="\1">\2</a>', s)
-    s = re.sub(r'\[url\]([^\[]*)\[/url\]', r'<a href="\1">\1</a>', s)
-    s = re.sub(r'\[img:\w+\]([^\[]*)\[/img:\w+\]', r'<img src="\1" />', s)
-    s = re.sub(r':lol:', r'<img alt="Hahaha!" src="http://www.atopowe-zapalenie.pl/forum/images/smiles/icon_lol.gif" />', s)
-    s = re.sub(r':wink:', r'<img alt="Puszcza oczko" src="http://www.atopowe-zapalenie.pl/forum/images/smiles/icon_wink.gif" />', s)
-    s = re.sub(r':!:', r'/!\\', s)
-    s = re.sub(r'\n\n', r'\n', s)
-    # Cudzysłowy drukarskie
-    # s = re.sub(r'"([^"]+)"', r'„\1”', s)
-    # usuwamy odstępy przed interpunkcją
-    s = re.sub(r'\s+([?!.,]\))', r'\1', s)
-    # spacja po interpunkcji
-    # s = re.sub(r'([?!.,\)])([\wąćęłńóśżź])', r'\1 \2', s)
-    # musi być spacja przed nawiasem
-    # s = re.sub(r'([\wąćęłńóśżź])(\()', r'\1 \2', s)
-    s = re.sub(r'\?+', r'?', s)
-    # Remove HTML comment tags
-    s = re.sub(r'<![^>]+>', r' ', s)
-    s = re.sub(r'<img[^>]+>', r' ', s)
-    s = re.sub(r'<a[^>]+>', r' ', s)
-    s = re.sub(r'</[^>]+>', r' ', s)
-    # change URLs
-    s = re.sub(r'\[url=([^]]+)\]([^\[]+)\[/url:?[^]]+\]', r'\2', s)
-    # TODO: implement links
-    # re.sub(r'\[url=([^]]+)\]([^\[]+)\[/url:?[^]]+\]', r'<a href="\1">\2</a>',
-    # s)
-    # Quotations
-    s = re.sub(r'\[quote=([^]]+)\]([^\[]+)\[/quote:?[^]]+\]', r'"""\2"""', s)
+    for pattern, replacement in CSUBS:
+        s = pattern.sub(replacement, s)
+
     return s
 
-# @register.filter
+@register.filter
 def withlink(obj):
     return "<a href=\"%s\">%s</a>" % (obj.get_absolute_url(), str(obj))
 
-register.filter('bbcode', bbcode)
-register.filter('withlink', withlink)
 
-class BaseForumNode(template.Node):
-    pass
-
-def forum_list(parser, token):
-    """Gets list of forums."""
-    pass
-
-register.tag(forum_list)
