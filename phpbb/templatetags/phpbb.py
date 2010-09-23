@@ -26,33 +26,42 @@ register = template.Library()
 
 
 SUBS = (
+        #lists
+        (r'\[\*:[^\]]+\](.*?)\n \[/\*:[^\]]+\]',r'<li>\1</li>'),
+        (r'\[list:[^\]]+\](.*?)\[/list:[^\]]+\]',r'<ul>\1</ul>'),
         # URLS
         (r'\[url=([^\]]*)\]([^\[]*)\[/url\]', r'<a href="\1">\2</a>'),
-        (r'\[url\]([^\[]*)\[/url\]', r'<a href="\1">\1</a>'),
+        (r'\[url=([^\]]*):\w+\](.*?)\[/url:\w+\]', r'<a href="\1">\2</a>'),
+        (r'\[url\](.*?)\[/url\]', r'<a href="\1">\1</a>'),
         # IMG
         (r'\[img:\w+\]([^\[]*)\[/img:\w+\]', r'<img src="\1" />'),
         # [u], [i], [b]
         (r'\[b:[^\]]*\]([^\[]*)\[/b:[^\]]*\]', r'<b>\1</b>'),
         (r'\[i:[^\]]*\]([^\[]*)\[/i:[^\]]*\]', r'<i>\1</i>'),
         (r'\[u:[^\]]*\]([^\[]*)\[/u:[^\]]*\]', r'<u>\1</u>'), #DEPRECATED, FIXME
+
+#        (r'\[\*:[^\]]*\]([^\[]*)\[/i:[/\*^\]]*\]', r'<i>\1</i>'),
         #quote
         (r'\[quote:\w+\]([^\[]*)\[/quote:\w+\]', r'<blockquote>\1</blockquote>'),
-        (r'\[quote:\w+="([\w\s]+)"\]([^\[]*)\[/quote:\w+\]', r'<blockquote><strong>\1:</strong><br /> \2</blockquote>'),
+        (r'\[quote=&quot;(.+?)&quot;:\w+\](.*)\[/quote:\w+\]', r'<blockquote><strong>\1:</strong><br /> \2</blockquote>'),
+        (r'\[quote="(.+?)":\w+\](.*)\[/quote:\w+\]', r'<blockquote><strong>\1:</strong><br /> \2</blockquote>'),
         # size
         (r'\[size=([0-9]+):\w+\](.*)\[/size:\w+\]', r'<font size="\1">\2</font>'),
         # Automatically convert http:// in url
         (r'(\s)http://([\w,.?=%/-]+)', r'<a href="\2">\2</a>(\s)'),
+        # Return to the line
+        (r'\n', r'<br>\n'),
         ## No idea, really
         #(r'\?+', r'?'),
-        # Remove HTML comment tags
-        (r'<![^>]+>', r' '),
-        (r'<img[^>]+>', r' '),
-        (r'<a[^>]+>', r' '),
-        (r'</[^>]+>', r' '),
+        # Remove all tags, don't know why you would want that
+        #(r'<![^>]+>', r' '),
+        #(r'<img[^>]+>', r' '),
+        #(r'<a[^>]+>', r' '),
+        #(r'</[^>]+>', r' '),
         )
 
 # Compiled subs
-CSUBS = [(re.compile(a),b) for a,b in SUBS]
+CSUBS = [(re.compile(a,re.S),b) for a,b in SUBS]
 
 @register.filter
 @stringfilter
@@ -61,6 +70,8 @@ def bbcode(s):
         s = pattern.sub(replacement, s)
 
     return s
+
+bbcode.is_safe = True
 
 @register.filter
 def withlink(obj):
