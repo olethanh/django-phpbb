@@ -161,12 +161,23 @@ class PhpbbGroup(models.Model):
     group_desc = models.TextField()
     group_desc_bitfield = models.CharField(max_length=255)
     group_desc_options = models.IntegerField()
+    members = models.ManyToManyField(PhpbbUser, through='PhpbbUserGroup')
+
     def __unicode__(self):
         return u"PhpbbGroup(%s, %s)" % (self.id, self.group_name)
     class Meta:
         db_table = 'phpbb_groups'
         ordering = ['id']
 
+class PhpbbUserGroup(models.Model):
+    group = models.ForeignKey(PhpbbGroup, primary_key=True)
+    user = models.ForeignKey(PhpbbUser, primary_key=True)
+    group_leader = models.IntegerField()
+    user_pending = models.IntegerField()
+    def __unicode__(self):
+        return u"PhpbbUserGroup(%s, %s)" % (self.group_id, self.user_id)
+    class Meta:
+        db_table = 'phpbb_user_group'
 
 class PhpbbAclRole(models.Model):
     role_id = models.IntegerField(primary_key=True)
