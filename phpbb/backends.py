@@ -18,8 +18,8 @@
 # Boston, MA  02110-1301  USA
 
 import logging
-from django.contrib.auth.models import User
-from models import PhpbbUser
+from django.contrib.auth.models import User, Group
+from models import PhpbbUser, PhpbbGroup
 import password as php_password
 
 from django.conf import settings
@@ -33,6 +33,9 @@ else:
 logging.basicConfig(level=logging_level)
 
 class PhpbbBackend:
+    supports_object_permissions = False
+    supports_anonymous_user = False
+
 
     def authenticate(self, username=None, password=None):
         """Authenticate user against phpBB3 database.
@@ -64,8 +67,9 @@ class PhpbbBackend:
             logging.info("Creating new Django user '%s'" % username)
             if username:
                 user = User(username = username, password = "")
-                user.is_staff = False
+                user.is_staff = True
                 user.is_superuser = False
+
                 user.email = phpbb_user.user_email
                 user.save()
             else:
@@ -82,3 +86,35 @@ class PhpbbBackend:
         user = User.objects.get(pk = user_id)
         logging.debug("get_user(): Returning user '%s'" % user)
         return user
+
+    def get_group_permissions(self, user_obj):
+        """
+        Return permissions for the django group comite if the user is in the comite PhpbbGroup
+        """
+        #FIXME : proper mapping table?
+        phpbbuser = PhpbbUser.objects.filter(username= user_obj.username)[0]
+        ret = set()
+        for phpbb_gid, django_gid in settings.PHPBB_GROUP_MAP:
+            if phpbbuser in PhpbbGroup.objects.get(pk=phpbb_gid).members.all():
+                django_group = Group.objects.get(pk=django_gid)
+                perms = django_group.permissions.all()
+                ret.update([u"%s.%s" % (p.content_type.app_label, p.codename) for p in perms])
+            logging.debug("Perms for user %s : %s" % (user_obj, ret))
+        return ret
+
+    # Apparently django also want you to define all the functions below for things to works
+    def get_all_permissions(self, user_obj):
+        return self.get_group_permissions(user_obj)
+
+    def has_perm(self, user_obj, perm):
+        return perm in self.get_all_permissions(user_obj)
+
+    def has_module_perms(self, user_obj, app_label):
+        """
+        Returns True if user_obj has any permissions in the given app_label.
+        """
+        for perm in self.get_all_permissions(user_obj):
+            if perm[:perm.index('.')] == app_label:
+                return True
+        return False
+
