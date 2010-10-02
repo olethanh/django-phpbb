@@ -21,6 +21,7 @@ import re
 
 from django.template.defaultfilters import stringfilter
 from django import template
+from django.conf import settings
 
 register = template.Library()
 
@@ -35,6 +36,8 @@ SUBS = (
         (r'\[url\](.*?)\[/url\]', r'<a href="\1">\1</a>'),
         # IMG
         (r'\[img:\w+\]([^\[]*)\[/img:\w+\]', r'<img src="\1" />'),
+        # Smilies path
+        ('{SMILIES_PATH}', settings.PHPBB_SMILIES_URL),
         # [u], [i], [b]
         (r'\[b:[^\]]*\]([^\[]*)\[/b:[^\]]*\]', r'<b>\1</b>'),
         (r'\[i:[^\]]*\]([^\[]*)\[/i:[^\]]*\]', r'<i>\1</i>'),
