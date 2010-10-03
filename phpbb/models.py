@@ -110,6 +110,10 @@ class PhpbbTopic(models.Model):
         		_("topics"),
         		self.topic_id,
         		self.get_slug())
+
+    def get_external_url(self):
+        return (settings.PHPBB_URL + "/viewtopic.php?t=%s"
+                % (self.topic_id))
     def get_slug(self):
         return slugify(self.get_title())
     def topic_time(self):
